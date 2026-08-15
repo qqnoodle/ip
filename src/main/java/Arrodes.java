@@ -41,8 +41,7 @@ public class Arrodes {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
-        String[] items = new String[MAX_ITEMS];
-        boolean[] isDone = new boolean[MAX_ITEMS];
+        Task[] tasks = new Task[MAX_ITEMS];
         int itemCount = 0;
 
         while (scanner.hasNextLine()) {
@@ -56,8 +55,8 @@ public class Arrodes {
             } else if (command.equals("list")) {
                 System.out.println("Arrodes recalls your requests:");
                 for (int i = 0; i < itemCount; i++) {
-                    String status = isDone[i] ? "[X]" : "[ ]";
-                    System.out.println((i + 1) + "." + status + " " + items[i]);
+                    System.out.println((i + 1) + ".[" + tasks[i].getStatusIcon() + "] "
+                            + tasks[i].getDescription());
                 }
                 System.out.println(SEPARATOR);
             } else if (command.startsWith("mark ")) {
@@ -68,9 +67,9 @@ public class Arrodes {
                         System.out.println("That task does not appear in Arrodes' annals.");
                     } else {
                         int taskIndex = taskNumber - 1;
-                        isDone[taskIndex] = true;
+                        tasks[taskIndex].markAsDone();
                         System.out.println("A worthy task! Arrodes has marked it as done:");
-                        System.out.println("  [X] " + items[taskIndex]);
+                        System.out.println("  [X] " + tasks[taskIndex].getDescription());
                     }
                 } catch (NumberFormatException exception) {
                     System.out.println("Name the task number for Arrodes to mark, such as: mark 2");
@@ -84,16 +83,16 @@ public class Arrodes {
                         System.out.println("That task does not appear in Arrodes' annals.");
                     } else {
                         int taskIndex = taskNumber - 1;
-                        isDone[taskIndex] = false;
+                        tasks[taskIndex].markAsNotDone();
                         System.out.println("As you decree, Arrodes has marked this task as not done yet:");
-                        System.out.println("  [ ] " + items[taskIndex]);
+                        System.out.println("  [ ] " + tasks[taskIndex].getDescription());
                     }
                 } catch (NumberFormatException exception) {
                     System.out.println("Name the task number for Arrodes to unmark, such as: unmark 2");
                 }
                 System.out.println(SEPARATOR);
             } else if (itemCount < MAX_ITEMS) {
-                items[itemCount] = command;
+                tasks[itemCount] = new Task(command);
                 itemCount++;
                 System.out.println("The request has been inscribed: " + command);
                 System.out.println(SEPARATOR);
