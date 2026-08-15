@@ -4,6 +4,9 @@ import java.util.Scanner;
  * Runs the Arrodes command-line application.
  */
 public class Arrodes {
+    /** Maximum number of requests Arrodes can remember during one session. */
+    private static final int MAX_ITEMS = 100;
+
     /** Line printed between user-interface messages. */
     private static final String SEPARATOR = "_".repeat(60);
 
@@ -26,7 +29,8 @@ public class Arrodes {
     private static final String BYE_MESSAGE = "I shall await your next request...";
 
     /**
-     * Greets the user, echoes commands, and exits when the user enters {@code bye}.
+     * Greets the user, stores each ordinary request, lists stored requests when asked,
+     * and exits when the user enters {@code bye}.
      *
      * @param args command-line arguments, which are not used
      */
@@ -37,6 +41,9 @@ public class Arrodes {
         System.out.println(SEPARATOR);
 
         Scanner scanner = new Scanner(System.in);
+        String[] items = new String[MAX_ITEMS];
+        int itemCount = 0;
+
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             System.out.println(" " + command);
@@ -46,6 +53,20 @@ public class Arrodes {
                 System.out.println(BYE_MESSAGE);
                 System.out.println(SEPARATOR);
                 break;
+            } else if (command.equals("list")) {
+                System.out.println("Arrodes recalls your requests:");
+                for (int i = 0; i < itemCount; i++) {
+                    System.out.println((i + 1) + ". " + items[i]);
+                }
+                System.out.println(SEPARATOR);
+            } else if (itemCount < MAX_ITEMS) {
+                items[itemCount] = command;
+                itemCount++;
+                System.out.println("The request has been inscribed: " + command);
+                System.out.println(SEPARATOR);
+            } else {
+                System.out.println("The annals of Arrodes are full; no further request can be inscribed.");
+                System.out.println(SEPARATOR);
             }
         }
     }
