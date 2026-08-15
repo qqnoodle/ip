@@ -29,8 +29,8 @@ public class Arrodes {
     private static final String BYE_MESSAGE = "I shall await your next request...";
 
     /**
-     * Greets the user, stores each ordinary request, lists stored requests when asked,
-     * and exits when the user enters {@code bye}.
+     * Greets the user, stores each ordinary request as a task, lists stored tasks,
+     * marks numbered tasks as done, and exits when the user enters {@code bye}.
      *
      * @param args command-line arguments, which are not used
      */
@@ -42,6 +42,7 @@ public class Arrodes {
 
         Scanner scanner = new Scanner(System.in);
         String[] items = new String[MAX_ITEMS];
+        boolean[] isDone = new boolean[MAX_ITEMS];
         int itemCount = 0;
 
         while (scanner.hasNextLine()) {
@@ -55,7 +56,24 @@ public class Arrodes {
             } else if (command.equals("list")) {
                 System.out.println("Arrodes recalls your requests:");
                 for (int i = 0; i < itemCount; i++) {
-                    System.out.println((i + 1) + ". " + items[i]);
+                    String status = isDone[i] ? "[X]" : "[ ]";
+                    System.out.println((i + 1) + "." + status + " " + items[i]);
+                }
+                System.out.println(SEPARATOR);
+            } else if (command.startsWith("mark ")) {
+                String taskNumberText = command.substring(5).trim();
+                try {
+                    int taskNumber = Integer.parseInt(taskNumberText);
+                    if (taskNumber < 1 || taskNumber > itemCount) {
+                        System.out.println("That task does not appear in Arrodes' annals.");
+                    } else {
+                        int taskIndex = taskNumber - 1;
+                        isDone[taskIndex] = true;
+                        System.out.println("A worthy task! Arrodes has marked it as done:");
+                        System.out.println("  [X] " + items[taskIndex]);
+                    }
+                } catch (NumberFormatException exception) {
+                    System.out.println("Name the task number for Arrodes to mark, such as: mark 2");
                 }
                 System.out.println(SEPARATOR);
             } else if (itemCount < MAX_ITEMS) {
