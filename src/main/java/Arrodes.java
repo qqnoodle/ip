@@ -30,7 +30,7 @@ public class Arrodes {
 
     /**
      * Greets the user, stores each ordinary request as a task, lists stored tasks,
-     * marks numbered tasks as done, and exits when the user enters {@code bye}.
+     * marks or unmarks numbered tasks, and exits when the user enters {@code bye}.
      *
      * @param args command-line arguments, which are not used
      */
@@ -74,6 +74,22 @@ public class Arrodes {
                     }
                 } catch (NumberFormatException exception) {
                     System.out.println("Name the task number for Arrodes to mark, such as: mark 2");
+                }
+                System.out.println(SEPARATOR);
+            } else if (command.startsWith("unmark ")) {
+                String taskNumberText = command.substring(7).trim();
+                try {
+                    int taskNumber = Integer.parseInt(taskNumberText);
+                    if (taskNumber < 1 || taskNumber > itemCount) {
+                        System.out.println("That task does not appear in Arrodes' annals.");
+                    } else {
+                        int taskIndex = taskNumber - 1;
+                        isDone[taskIndex] = false;
+                        System.out.println("As you decree, Arrodes has marked this task as not done yet:");
+                        System.out.println("  [ ] " + items[taskIndex]);
+                    }
+                } catch (NumberFormatException exception) {
+                    System.out.println("Name the task number for Arrodes to unmark, such as: unmark 2");
                 }
                 System.out.println(SEPARATOR);
             } else if (itemCount < MAX_ITEMS) {
