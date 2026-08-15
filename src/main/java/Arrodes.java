@@ -46,7 +46,6 @@ public class Arrodes {
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
-            System.out.println(" " + command);
             System.out.println(SEPARATOR);
 
             if (command.equals("bye")) {
