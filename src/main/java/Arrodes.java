@@ -55,8 +55,7 @@ public class Arrodes {
             } else if (command.equals("list")) {
                 System.out.println("Arrodes recalls your requests:");
                 for (int i = 0; i < itemCount; i++) {
-                    System.out.println((i + 1) + ".[" + tasks[i].getStatusIcon() + "] "
-                            + tasks[i].getDescription());
+                    System.out.println((i + 1) + "." + tasks[i].toString());
                 }
                 System.out.println(SEPARATOR);
             } else if (command.startsWith("mark ")) {
@@ -92,9 +91,15 @@ public class Arrodes {
                 }
                 System.out.println(SEPARATOR);
             } else if (itemCount < MAX_ITEMS) {
-                tasks[itemCount] = new Task(command);
-                itemCount++;
-                System.out.println("The request has been inscribed: " + command);
+                if (command.startsWith("todo")) {
+                    tasks[itemCount] = new Todo(command.substring(5));
+                    System.out.println("Inscribing request: \n"
+                        + "   " + tasks[itemCount++].toString() + "\n"
+                        + itemCount + " tasks are being tracked");
+                } else {
+                    tasks[itemCount++] = new Task(command);
+                    System.out.println("The request has been inscribed: " + command);
+                }
                 System.out.println(SEPARATOR);
             } else {
                 System.out.println("The annals of Arrodes are full; no further request can be inscribed.");
