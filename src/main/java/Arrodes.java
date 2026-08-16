@@ -98,7 +98,16 @@ public class Arrodes {
                         + itemCount + " tasks are being tracked");
                 } else if (command.startsWith("deadline")) {
                     String[] partsOfCommand = command.split("/");
-                    tasks[itemCount] = new Deadline(partsOfCommand[0].substring(9), partsOfCommand[1].substring(3));
+                    tasks[itemCount] = new Deadline(partsOfCommand[0].substring(9)
+                            , partsOfCommand[1].substring(3).trim());
+                    System.out.println("Inscribing request: \n"
+                            + "   " + tasks[itemCount++].toString() + "\n"
+                            + itemCount + " tasks are being tracked");
+                } else if (command.startsWith("event")) {
+                    String[] partsOfCommand = command.split("/");
+                    tasks[itemCount] = new Event(partsOfCommand[0].substring(9)
+                            , partsOfCommand[1].substring(5).trim()
+                            , partsOfCommand[2].substring(3).trim());
                     System.out.println("Inscribing request: \n"
                             + "   " + tasks[itemCount++].toString() + "\n"
                             + itemCount + " tasks are being tracked");
