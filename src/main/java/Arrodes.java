@@ -91,28 +91,33 @@ public class Arrodes {
                 }
                 System.out.println(SEPARATOR);
             } else if (itemCount < MAX_ITEMS) {
+                boolean hasInstructionCommand = false;
                 if (command.startsWith("todo")) {
+                    hasInstructionCommand = true;
                     tasks[itemCount] = new Todo(command.substring(5));
-                    System.out.println("Inscribing request: \n"
-                        + "   " + tasks[itemCount++].toString() + "\n"
-                        + itemCount + " tasks are being tracked");
                 } else if (command.startsWith("deadline")) {
+                    hasInstructionCommand = true;
                     String[] partsOfCommand = command.split("/");
                     tasks[itemCount] = new Deadline(partsOfCommand[0].substring(9)
                             , partsOfCommand[1].substring(3).trim());
-                    System.out.println("Inscribing request: \n"
-                            + "   " + tasks[itemCount++].toString() + "\n"
-                            + itemCount + " tasks are being tracked");
                 } else if (command.startsWith("event")) {
+                    hasInstructionCommand = true;
                     String[] partsOfCommand = command.split("/");
-                    tasks[itemCount] = new Event(partsOfCommand[0].substring(9)
+                    tasks[itemCount] = new Event(partsOfCommand[0].substring(6)
                             , partsOfCommand[1].substring(5).trim()
                             , partsOfCommand[2].substring(3).trim());
+                } else {
+                    tasks[itemCount++] = new Task(command);
+                }
+
+                /**
+                 * Handle CLI output
+                */
+                if (hasInstructionCommand) {
                     System.out.println("Inscribing request: \n"
                             + "   " + tasks[itemCount++].toString() + "\n"
                             + itemCount + " tasks are being tracked");
                 } else {
-                    tasks[itemCount++] = new Task(command);
                     System.out.println("The request has been inscribed: " + command);
                 }
                 System.out.println(SEPARATOR);
