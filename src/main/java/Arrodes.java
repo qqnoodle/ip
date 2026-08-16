@@ -69,7 +69,7 @@ public class Arrodes {
                         int taskIndex = taskNumber - 1;
                         tasks[taskIndex].markAsDone();
                         System.out.println("A worthy task! Arrodes has marked it as done:");
-                        System.out.println("  [X] " + tasks[taskIndex].getDescription());
+                        System.out.println("  " + tasks[taskIndex].toString());
                     }
                 } catch (NumberFormatException exception) {
                     System.out.println("Name the task number for Arrodes to mark, such as: mark 2");
@@ -85,7 +85,7 @@ public class Arrodes {
                         int taskIndex = taskNumber - 1;
                         tasks[taskIndex].markAsNotDone();
                         System.out.println("As you decree, Arrodes has marked this task as not done yet:");
-                        System.out.println("  [ ] " + tasks[taskIndex].getDescription());
+                        System.out.println("  " + tasks[taskIndex].toString());
                     }
                 } catch (NumberFormatException exception) {
                     System.out.println("Name the task number for Arrodes to unmark, such as: unmark 2");
