@@ -30,4 +30,13 @@ public class TaskList {
         if ((itemIndex) >= list.size() || itemIndex < 0) throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
         list.remove(itemIndex);
     }
+
+    public Task getTaskByIndex(int itemIndex) {
+        if ((itemIndex) >= list.size() || itemIndex < 0) throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        return list.get(itemIndex);
+    }
+
+    public Task getTaskByNumber(int itemNumber) {
+        return getTaskByIndex(itemNumber - 1);
+    }
 }
