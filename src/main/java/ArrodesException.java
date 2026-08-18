@@ -4,7 +4,9 @@ public class ArrodesException extends RuntimeException {
     public static final String EMPTY_DESCRIPTION = "Arrodes requires more information of the nature of the task";
     public static final String INCORRECT_PARAMS_COUNT = "Arrodes requires more magic words (parameters) for the request!!";
     public static final String INCORRECT_PARAMS = "Your ritualistic magic parameters is incorrect!!!";
+
     public static final String TASK_LIST_FULL = "Records of Arrodes reached its limit and can no longer accept more request!!!";
+    public static final String ITEM_NOT_IN_LIST = "That task does not appear in Arrodes' annals.";
 
     /**
      * Constructs a new ArrodesException with the default RuntimeException
