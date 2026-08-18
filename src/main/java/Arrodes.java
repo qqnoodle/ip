@@ -79,6 +79,14 @@ public class Arrodes {
                         System.out.println("As you decree, Arrodes has marked this task as not done yet:");
                         System.out.println("  " + markedTask);
                         break;
+                    case DELETE:
+                        int deleteTaskNumber = Integer.parseInt(description);
+                        Task taskToBeDeleted = taskList.getTaskByNumber(deleteTaskNumber);
+                        taskList.delete(deleteTaskNumber);
+                        System.out.println("Erasing records of the task:\n");
+                        System.out.println(taskToBeDeleted + "\n");
+                        System.out.println(taskList.getSize() + " tasks remaining are being tracked");
+                        break;
                     case TODO:
                         if (!parameters.isEmpty()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         taskList.insert(new Todo(description));
