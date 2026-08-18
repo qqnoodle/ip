@@ -43,8 +43,7 @@ public class Arrodes {
 
         boolean EXIT_FLAG = false;
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[MAX_ITEMS];
-        int itemCount = 0;
+        TaskList taskList = new TaskList(MAX_ITEMS);
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -55,7 +54,6 @@ public class Arrodes {
                 String description = parsedCommand.getDescription();
                 Map<String ,String> parameters = parsedCommand.getParameters();
                 switch (commandKeyword) {
-                    //TODO list command
                     case BYE:
                         System.out.println(BYE_MESSAGE);
                         EXIT_FLAG = true;
@@ -63,60 +61,49 @@ public class Arrodes {
                     case LIST:
                         if (!description.isBlank()) throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
                         System.out.println("Arrodes recalls your requests:");
-                        for (int i = 0; i < itemCount; i++) {
-                            System.out.println((i + 1) + "." + tasks[i].toString());
+                        for (int i = 0; i < taskList.getSize(); i++) {
+                            System.out.println((i + 1) + "." + taskList.getTaskByIndex(i).toString());
                         }
                         break;
                     case MARK:
                         int markTaskNumber = Integer.parseInt(description);
-                        if (markTaskNumber < 1 || markTaskNumber > itemCount) {
-                            System.out.println("That task does not appear in Arrodes' annals.");
-                        } else {
-                            int markTaskIndex = markTaskNumber - 1;
-                            tasks[markTaskIndex].markAsDone();
-                            System.out.println("A worthy task! Arrodes has marked it as done:");
-                            System.out.println("  " + tasks[markTaskIndex].toString());
-                        }
+                        Task unmarkedTask = taskList.getTaskByNumber(markTaskNumber);
+                        unmarkedTask.markAsDone();
+                        System.out.println("A worthy task! Arrodes has marked it as done:");
+                        System.out.println("  " + unmarkedTask);
                         break;
                     case UNMARK:
                         int unmarkTaskNumber = Integer.parseInt(description);
-                        if (unmarkTaskNumber < 1 || unmarkTaskNumber > itemCount) {
-                            System.out.println("That task does not appear in Arrodes' annals.");
-                        } else {
-                            int unmarkTaskIndex = unmarkTaskNumber - 1;
-                            tasks[unmarkTaskIndex].markAsNotDone();
-                            System.out.println("As you decree, Arrodes has marked this task as not done yet:");
-                            System.out.println("  " + tasks[unmarkTaskIndex].toString());
-                        }
+                        Task markedTask = taskList.getTaskByNumber(unmarkTaskNumber);
+                        markedTask.markAsNotDone();
+                        System.out.println("As you decree, Arrodes has marked this task as not done yet:");
+                        System.out.println("  " + markedTask);
                         break;
                     case TODO:
                         if (!parameters.isEmpty()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                        if (itemCount == MAX_ITEMS) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
-                        tasks[itemCount] = new Todo(description);
+                        taskList.insert(new Todo(description));
                         System.out.println("Inscribing request: \n"
-                                + "   " + tasks[itemCount++].toString() + "\n"
-                                + itemCount + " tasks are being tracked");
+                                + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
+                                + taskList.getSize() + " tasks are being tracked");
                         break;
                     case DEADLINE:
-                        if (itemCount == MAX_ITEMS) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
                         // Deadline requires /by
                         if (parameters.size() != 1) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
                         if (!parameters.containsKey("by")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                        tasks[itemCount] = new Deadline(description, parameters.get("by"));
+                        taskList.insert(new Deadline(description, parameters.get("by")));
                         System.out.println("Inscribing request: \n"
-                                + "   " + tasks[itemCount++].toString() + "\n"
-                                + itemCount + " tasks are being tracked");
+                                + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
+                                + taskList.getSize() + " tasks are being tracked");
                         break;
                     case EVENT:
-                        if (itemCount == MAX_ITEMS) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
                         // Event requires /from /to
                         if (parameters.size() != 2) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
                         if (!parameters.containsKey("from")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         if (!parameters.containsKey("to")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                        tasks[itemCount] = new Event(description, parameters.get("from"), parameters.get("to"));
+                        taskList.insert(new Event(description, parameters.get("from"), parameters.get("to")));
                         System.out.println("Inscribing request: \n"
-                                + "   " + tasks[itemCount++].toString() + "\n"
-                                + itemCount + " tasks are being tracked");
+                                + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
+                                + taskList.getSize() + " tasks are being tracked");
                         break;
                     default:
                         throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
@@ -127,8 +114,8 @@ public class Arrodes {
                 System.out.println("Name the task number for Arrodes to handle, such as: mark/unmark 2");
             } finally {
                 System.out.println(SEPARATOR);
-                if (EXIT_FLAG) break;
             }
+            if (EXIT_FLAG) break;
         }
     }
 }
