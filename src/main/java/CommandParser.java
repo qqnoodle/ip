@@ -18,7 +18,7 @@ public class CommandParser {
          */
         String[] splitInput = userInput.split(" ", 2);
 
-        String command = splitInput[0];
+        Command command = Command.fromString(splitInput[0]);
         String description = "";
         Map<String,String> parameters = new HashMap<>();
 

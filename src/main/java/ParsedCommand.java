@@ -2,17 +2,17 @@ import java.lang.reflect.Parameter;
 import java.util.Map;
 
 public class ParsedCommand {
-    private String command;
-    private String description;
-    private Map<String, String> parameters;
+    private final Command command;
+    private final String description;
+    private final Map<String, String> parameters;
 
-    public ParsedCommand(String command, String description, Map<String, String> parameters) {
+    public ParsedCommand(Command command, String description, Map<String, String> parameters) {
         this.command = command;
         this.description = description;
         this.parameters = parameters;
     }
 
-    public String getCommand() {
+    public Command getCommand() {
         return command;
     }
 

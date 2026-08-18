@@ -51,23 +51,23 @@ public class Arrodes {
             System.out.println(SEPARATOR);
             try {
                 ParsedCommand parsedCommand = CommandParser.parse(command);
-                String commandKeyword = parsedCommand.getCommand();
+                Command commandKeyword = parsedCommand.getCommand();
                 String description = parsedCommand.getDescription();
                 Map<String ,String> parameters = parsedCommand.getParameters();
                 switch (commandKeyword) {
                     //TODO list command
-                    case "bye":
+                    case BYE:
                         System.out.println(BYE_MESSAGE);
                         EXIT_FLAG = true;
                         break;
-                    case "list":
+                    case LIST:
                         if (!description.isBlank()) throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
                         System.out.println("Arrodes recalls your requests:");
                         for (int i = 0; i < itemCount; i++) {
                             System.out.println((i + 1) + "." + tasks[i].toString());
                         }
                         break;
-                    case "mark":
+                    case MARK:
                         int markTaskNumber = Integer.parseInt(description);
                         if (markTaskNumber < 1 || markTaskNumber > itemCount) {
                             System.out.println("That task does not appear in Arrodes' annals.");
@@ -78,7 +78,7 @@ public class Arrodes {
                             System.out.println("  " + tasks[markTaskIndex].toString());
                         }
                         break;
-                    case "unmark":
+                    case UNMARK:
                         int unmarkTaskNumber = Integer.parseInt(description);
                         if (unmarkTaskNumber < 1 || unmarkTaskNumber > itemCount) {
                             System.out.println("That task does not appear in Arrodes' annals.");
@@ -89,7 +89,7 @@ public class Arrodes {
                             System.out.println("  " + tasks[unmarkTaskIndex].toString());
                         }
                         break;
-                    case "todo":
+                    case TODO:
                         if (!parameters.isEmpty()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         if (itemCount == MAX_ITEMS) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
                         tasks[itemCount] = new Todo(description);
@@ -97,7 +97,7 @@ public class Arrodes {
                                 + "   " + tasks[itemCount++].toString() + "\n"
                                 + itemCount + " tasks are being tracked");
                         break;
-                    case "deadline":
+                    case DEADLINE:
                         if (itemCount == MAX_ITEMS) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
                         // Deadline requires /by
                         if (parameters.size() != 1) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
@@ -107,7 +107,7 @@ public class Arrodes {
                                 + "   " + tasks[itemCount++].toString() + "\n"
                                 + itemCount + " tasks are being tracked");
                         break;
-                    case "event":
+                    case EVENT:
                         if (itemCount == MAX_ITEMS) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
                         // Event requires /from /to
                         if (parameters.size() != 2) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
