@@ -9,15 +9,27 @@ public class Event extends Task {
     private final LocalDateTime startAt;
     /** Ending date and time of the event. */
     private final LocalDateTime endAt;
+    /** Whether the input explicitly included a time for the start endpoint. */
+    private final boolean startIncludesTime;
+    /** Whether the input explicitly included a time for the end endpoint. */
+    private final boolean endIncludesTime;
 
     /** Creates an event with ISO local date-time boundaries. */
     public Event(String description, LocalDateTime startAt, LocalDateTime endAt) {
+        this(description, startAt, endAt, true, true);
+    }
+
+    /** Creates an event while preserving whether either input endpoint included a time. */
+    public Event(String description, LocalDateTime startAt, LocalDateTime endAt,
+                 boolean startIncludesTime, boolean endIncludesTime) {
         super(description);
         if (startAt == null || endAt == null || endAt.isBefore(startAt)) {
             throw new IllegalArgumentException("Event times are invalid.");
         }
         this.startAt = startAt;
         this.endAt = endAt;
+        this.startIncludesTime = startIncludesTime;
+        this.endIncludesTime = endIncludesTime;
     }
 
     /**
@@ -40,8 +52,14 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm", Locale.ENGLISH);
         return String.format("[E]%s (from: %s to %s)", super.toString(),
-                startAt.format(displayFormat), endAt.format(displayFormat));
+                formatEndpoint(startAt, startIncludesTime), formatEndpoint(endAt, endIncludesTime));
+    }
+
+    /** Formats date-only endpoints without exposing their internal midnight time. */
+    private String formatEndpoint(LocalDateTime endpoint, boolean includesTime) {
+        DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern(
+                includesTime ? "MMM dd yyyy HH:mm" : "MMM dd yyyy", Locale.ENGLISH);
+        return endpoint.format(displayFormat);
     }
 }

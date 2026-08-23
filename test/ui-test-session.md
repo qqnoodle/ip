@@ -396,7 +396,127 @@ ____________________________________________________________
 
 Exit code: 0
 
-## 6. TC06: Validate event time ordering — PASS
+## 6. TC07: Find upcoming tasks on a date — PASS
+
+Aim: Verify that upcoming lists matching deadlines and events for date-only and date-time queries.
+
+**Command:**
+```text
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+```
+
+**Console input:**
+```text
+deadline submit report /by 2026-10-15T17:00
+event all day /from 2026-10-15 /to 2026-10-15
+event meeting /from 2026-10-14T23:00 /to 2026-10-15T01:00
+todo buy milk
+upcoming /on 2026-10-15
+upcoming /on 2026-10-15T00:30
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+    _                       _
+   / \   _ __ _ __ ___   __| | ___  ___
+  / _ \ | '__| '__/ _ \ / _` |/ _ \/ __|
+ / ___ \| |  | | | (_) | (_| |  __/\__ \
+/_/   \_\_|  |_|  \___/ \__,_|\___||___/
+Eyes that watch All living Beings
+The Stigmata from the Primordial Land
+The Great Arrodes is before you!
+State your request!
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [D][ ] submit report (by: Oct 15 2026 17:00)
+1 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [E][ ] all day (from: Oct 15 2026 to Oct 15 2026)
+2 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [E][ ] meeting (from: Oct 14 2026 23:00 to Oct 15 2026 01:00)
+3 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [T][ ] buy milk
+4 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Arrodes recalls requests for Oct 15 2026:
+1.[D][ ] submit report (by: Oct 15 2026 17:00)
+2.[E][ ] all day (from: Oct 15 2026 to Oct 15 2026)
+3.[E][ ] meeting (from: Oct 14 2026 23:00 to Oct 15 2026 01:00)
+____________________________________________________________
+____________________________________________________________
+Arrodes recalls requests for Oct 15 2026 00:30:
+3.[E][ ] meeting (from: Oct 14 2026 23:00 to Oct 15 2026 01:00)
+____________________________________________________________
+____________________________________________________________
+I shall await your next request...
+____________________________________________________________
+
+```
+
+**Actual output:**
+```text
+____________________________________________________________
+    _                       _
+   / \   _ __ _ __ ___   __| | ___  ___
+  / _ \ | '__| '__/ _ \ / _` |/ _ \/ __|
+ / ___ \| |  | | | (_) | (_| |  __/\__ \
+/_/   \_\_|  |_|  \___/ \__,_|\___||___/
+Eyes that watch All living Beings
+The Stigmata from the Primordial Land
+The Great Arrodes is before you!
+State your request!
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [D][ ] submit report (by: Oct 15 2026 17:00)
+1 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [E][ ] all day (from: Oct 15 2026 to Oct 15 2026)
+2 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [E][ ] meeting (from: Oct 14 2026 23:00 to Oct 15 2026 01:00)
+3 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Inscribing request: 
+   [T][ ] buy milk
+4 tasks are being tracked
+____________________________________________________________
+____________________________________________________________
+Arrodes recalls requests for Oct 15 2026:
+1.[D][ ] submit report (by: Oct 15 2026 17:00)
+2.[E][ ] all day (from: Oct 15 2026 to Oct 15 2026)
+3.[E][ ] meeting (from: Oct 14 2026 23:00 to Oct 15 2026 01:00)
+____________________________________________________________
+____________________________________________________________
+Arrodes recalls requests for Oct 15 2026 00:30:
+3.[E][ ] meeting (from: Oct 14 2026 23:00 to Oct 15 2026 01:00)
+____________________________________________________________
+____________________________________________________________
+I shall await your next request...
+____________________________________________________________
+
+```
+
+Exit code: 0
+
+## 7. TC06: Validate event time ordering — PASS
 
 Aim: Verify that same-day date-only events are accepted and reversed event times produce a warning.
 
@@ -427,7 +547,7 @@ State your request!
 ____________________________________________________________
 ____________________________________________________________
 Inscribing request: 
-   [E][ ] same day (from: Oct 15 2026 00:00 to Oct 15 2026 00:00)
+   [E][ ] same day (from: Oct 15 2026 to Oct 15 2026)
 1 tasks are being tracked
 ____________________________________________________________
 ____________________________________________________________
@@ -454,7 +574,7 @@ State your request!
 ____________________________________________________________
 ____________________________________________________________
 Inscribing request: 
-   [E][ ] same day (from: Oct 15 2026 00:00 to Oct 15 2026 00:00)
+   [E][ ] same day (from: Oct 15 2026 to Oct 15 2026)
 1 tasks are being tracked
 ____________________________________________________________
 ____________________________________________________________

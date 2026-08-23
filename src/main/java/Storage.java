@@ -140,7 +140,8 @@ public class Storage {
         case "E":
             if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) throw invalidRecord();
             try {
-                task = new Event(fields.get(2), parseDateTime(fields.get(3)), parseDateTime(fields.get(4)));
+                task = new Event(fields.get(2), parseDateTime(fields.get(3)), parseDateTime(fields.get(4)),
+                        fields.get(3).contains("T"), fields.get(4).contains("T"));
             } catch (IllegalArgumentException exception) {
                 throw invalidRecord();
             }
