@@ -6,6 +6,9 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * Saves Arrodes tasks to a plain-text file.
@@ -132,11 +135,15 @@ public class Storage {
             break;
         case "D":
             if (fields.size() != 4 || fields.get(3).isBlank()) throw invalidRecord();
-            task = new Deadline(fields.get(2), fields.get(3));
+            task = new Deadline(fields.get(2), parseDateTime(fields.get(3)));
             break;
         case "E":
             if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) throw invalidRecord();
-            task = new Event(fields.get(2), fields.get(3), fields.get(4));
+            try {
+                task = new Event(fields.get(2), parseDateTime(fields.get(3)), parseDateTime(fields.get(4)));
+            } catch (IllegalArgumentException exception) {
+                throw invalidRecord();
+            }
             break;
         default:
             throw invalidRecord();
@@ -184,6 +191,19 @@ public class Storage {
         return new ArrodesException("Arrodes could not load your requests.");
     }
 
+    /** Parses an ISO date or date-time, normalising date-only values to midnight. */
+    private LocalDateTime parseDateTime(String value) throws ArrodesException {
+        try {
+            return LocalDateTime.parse(value);
+        } catch (RuntimeException exception) {
+            try {
+                return LocalDate.parse(value).atStartOfDay();
+            } catch (RuntimeException ignored) {
+                throw invalidRecord();
+            }
+        }
+    }
+
     /** Converts one task into the storage format. */
     private String formatTask(Task task) {
         if (task == null || task.getDescription() == null || task.getDescription().isBlank()
@@ -193,11 +213,12 @@ public class Storage {
         String status = task.isDone() ? "1" : "0";
         if (task instanceof Deadline deadline) {
             return String.format("D | %s | %s | %s", status, encode(deadline.getDescription()),
-                    encodeRequired(deadline.getDueBy()));
+                    encodeRequired(formatDateTime(deadline.getDueBy())));
         }
         if (task instanceof Event event) {
             return String.format("E | %s | %s | %s | %s", status, encode(event.getDescription()),
-                    encodeRequired(event.getStartAt()), encodeRequired(event.getEndAt()));
+                    encodeRequired(formatDateTime(event.getStartAt())),
+                    encodeRequired(formatDateTime(event.getEndAt())));
         }
         if (!(task instanceof Todo)) {
             throw new IllegalArgumentException("Unknown task type.");
@@ -214,11 +235,18 @@ public class Storage {
     }
 
     /** Encodes a required task-specific field. */
-    private String encodeRequired(String value) {
-        if (value == null || value.isBlank()) {
+    private String encodeRequired(Object value) {
+        if (value == null || value.toString().isBlank()) {
             throw new IllegalArgumentException("Storage fields cannot be blank.");
         }
-        return encode(value);
+        return encode(value.toString());
+    }
+
+    /** Formats midnight as a date and other values as a local date-time. */
+    private String formatDateTime(LocalDateTime value) {
+        return value.toLocalTime().equals(LocalTime.MIDNIGHT)
+                ? value.toLocalDate().toString()
+                : value.toString();
     }
 
     /** Returns whether a value would corrupt the line-oriented format. */

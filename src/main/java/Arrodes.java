@@ -1,5 +1,8 @@
 import java.util.Map;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 /**
  * Runs the Arrodes command-line application.
@@ -111,7 +114,8 @@ public class Arrodes {
                         if (parameters.size() != 1) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
                         if (!parameters.containsKey("by")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         requireDescription(description);
-                        taskList.insert(new Deadline(description, parameters.get("by")));
+                        taskList.insert(new Deadline(description, parseDateTime(parameters.get("by"),
+                                "Use a date or date-time in yyyy-MM-dd or yyyy-MM-ddTHH:mm format.")));
                         storage.save(taskList);
                         System.out.println("Inscribing request: \n"
                                 + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
@@ -123,7 +127,14 @@ public class Arrodes {
                         if (!parameters.containsKey("from")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         if (!parameters.containsKey("to")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         requireDescription(description);
-                        taskList.insert(new Event(description, parameters.get("from"), parameters.get("to")));
+                        try {
+                            taskList.insert(new Event(description, parseDateTime(parameters.get("from"),
+                                            "Use event times in yyyy-MM-dd or yyyy-MM-ddTHH:mm format."),
+                                    parseDateTime(parameters.get("to"),
+                                            "Use event times in yyyy-MM-dd or yyyy-MM-ddTHH:mm format.")));
+                        } catch (IllegalArgumentException exception) {
+                            throw new ArrodesException(ArrodesException.INVALID_EVENT_TIME);
+                        }
                         storage.save(taskList);
                         System.out.println("Inscribing request: \n"
                                 + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
@@ -147,6 +158,25 @@ public class Arrodes {
     private static void requireDescription(String description) throws ArrodesException {
         if (description == null || description.isBlank()) {
             throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+        }
+    }
+
+    /** Parses an ISO date or date-time, normalising date-only values to midnight. */
+    private static LocalDateTime parseDateTime(String value, String errorMessage) throws ArrodesException {
+        boolean hasExpectedShape = value != null
+                && value.matches("\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2})?");
+        try {
+            return LocalDateTime.parse(value);
+        } catch (DateTimeParseException exception) {
+            try {
+                return LocalDate.parse(value).atStartOfDay();
+            } catch (DateTimeParseException ignored) {
+                if (hasExpectedShape) {
+                    throw new ArrodesException(
+                            "That date is invalid because the specified day or time does not exist.");
+                }
+                throw new ArrodesException(errorMessage);
+            }
         }
     }
 }
