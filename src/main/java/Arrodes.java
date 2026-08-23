@@ -1,5 +1,11 @@
 import java.util.Map;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Runs the Arrodes command-line application.
@@ -111,7 +117,8 @@ public class Arrodes {
                         if (parameters.size() != 1) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
                         if (!parameters.containsKey("by")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         requireDescription(description);
-                        taskList.insert(new Deadline(description, parameters.get("by")));
+                        taskList.insert(new Deadline(description, parseDateTime(parameters.get("by"),
+                                "Use a date or date-time in yyyy-MM-dd or yyyy-MM-ddTHH:mm format.")));
                         storage.save(taskList);
                         System.out.println("Inscribing request: \n"
                                 + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
@@ -123,11 +130,28 @@ public class Arrodes {
                         if (!parameters.containsKey("from")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         if (!parameters.containsKey("to")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         requireDescription(description);
-                        taskList.insert(new Event(description, parameters.get("from"), parameters.get("to")));
+                        try {
+                            String startValue = parameters.get("from");
+                            String endValue = parameters.get("to");
+                            taskList.insert(new Event(description, parseDateTime(startValue,
+                                            "Use event times in yyyy-MM-dd or yyyy-MM-ddTHH:mm format."),
+                                    parseDateTime(endValue,
+                                            "Use event times in yyyy-MM-dd or yyyy-MM-ddTHH:mm format."),
+                                    startValue.contains("T"), endValue.contains("T")));
+                        } catch (IllegalArgumentException exception) {
+                            throw new ArrodesException(ArrodesException.INVALID_EVENT_TIME);
+                        }
                         storage.save(taskList);
                         System.out.println("Inscribing request: \n"
                                 + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
                                 + taskList.getSize() + " tasks are being tracked");
+                        break;
+                    case UPCOMING:
+                        if (!description.isBlank()) throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
+                        if (parameters.size() != 1 || !parameters.containsKey("on")) {
+                            throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                        }
+                        printUpcoming(taskList, parameters.get("on"));
                         break;
                     default:
                         throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
@@ -147,6 +171,59 @@ public class Arrodes {
     private static void requireDescription(String description) throws ArrodesException {
         if (description == null || description.isBlank()) {
             throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+        }
+    }
+
+    /** Parses an ISO date or date-time, normalising date-only values to midnight. */
+    private static LocalDateTime parseDateTime(String value, String errorMessage) throws ArrodesException {
+        boolean hasExpectedShape = value != null
+                && value.matches("\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2})?");
+        try {
+            return LocalDateTime.parse(value);
+        } catch (DateTimeParseException exception) {
+            try {
+                return LocalDate.parse(value).atStartOfDay();
+            } catch (DateTimeParseException ignored) {
+                if (hasExpectedShape) {
+                    throw new ArrodesException(
+                            "That date is invalid because the specified day or time does not exist.");
+                }
+                throw new ArrodesException(errorMessage);
+            }
+        }
+    }
+
+    /** Prints deadlines due by and events occurring on the requested date or time. */
+    private static void printUpcoming(TaskList taskList, String requestedTime) throws ArrodesException {
+        LocalDateTime target = parseDateTime(requestedTime,
+                "Use a date or date-time in yyyy-MM-dd or yyyy-MM-ddTHH:mm format.");
+        boolean dateOnly = !requestedTime.contains("T");
+        LocalDate targetDate = target.toLocalDate();
+        LocalDateTime dayEnd = targetDate.atTime(LocalTime.MAX);
+        DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern(
+                dateOnly ? "MMM dd yyyy" : "MMM dd yyyy HH:mm", Locale.ENGLISH);
+        LocalDateTime deadlineCutoff = dateOnly ? dayEnd : target;
+        boolean found = false;
+
+        System.out.println("Arrodes recalls requests for " + target.format(displayFormat) + ":");
+        for (int i = 0; i < taskList.getSize(); i++) {
+            Task task = taskList.getTaskByIndex(i);
+            boolean matches = false;
+            if (task instanceof Deadline deadline) {
+                matches = !deadline.getDueBy().isAfter(deadlineCutoff);
+            } else if (task instanceof Event event) {
+                matches = dateOnly
+                        ? !event.getStartAt().toLocalDate().isAfter(targetDate)
+                                && !event.getEndAt().toLocalDate().isBefore(targetDate)
+                        : !event.getStartAt().isAfter(target) && !event.getEndAt().isBefore(target);
+            }
+            if (matches) {
+                System.out.println((i + 1) + "." + task);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("Arrodes found no deadlines or events for that date or time.");
         }
     }
 }
