@@ -44,7 +44,13 @@ public class Arrodes {
         boolean EXIT_FLAG = false;
         Scanner scanner = new Scanner(System.in);
         Storage storage = new Storage();
-        TaskList taskList = storage.load(MAX_ITEMS);
+        TaskList taskList;
+        try {
+            taskList = storage.load(MAX_ITEMS);
+        } catch (ArrodesException exception) {
+            System.out.println(exception.getMessage());
+            taskList = new TaskList(MAX_ITEMS);
+        }
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -93,6 +99,7 @@ public class Arrodes {
                         break;
                     case TODO:
                         if (!parameters.isEmpty()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                        requireDescription(description);
                         taskList.insert(new Todo(description));
                         storage.save(taskList);
                         System.out.println("Inscribing request: \n"
@@ -103,6 +110,7 @@ public class Arrodes {
                         // Deadline requires /by
                         if (parameters.size() != 1) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
                         if (!parameters.containsKey("by")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                        requireDescription(description);
                         taskList.insert(new Deadline(description, parameters.get("by")));
                         storage.save(taskList);
                         System.out.println("Inscribing request: \n"
@@ -114,6 +122,7 @@ public class Arrodes {
                         if (parameters.size() != 2) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS_COUNT);
                         if (!parameters.containsKey("from")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                         if (!parameters.containsKey("to")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                        requireDescription(description);
                         taskList.insert(new Event(description, parameters.get("from"), parameters.get("to")));
                         storage.save(taskList);
                         System.out.println("Inscribing request: \n"
@@ -131,6 +140,13 @@ public class Arrodes {
                 System.out.println(SEPARATOR);
             }
             if (EXIT_FLAG) break;
+        }
+    }
+
+    /** Rejects task commands that do not contain a meaningful description. */
+    private static void requireDescription(String description) throws ArrodesException {
+        if (description == null || description.isBlank()) {
+            throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
         }
     }
 }

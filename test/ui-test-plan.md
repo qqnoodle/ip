@@ -34,6 +34,66 @@ I shall await your next request...
 ____________________________________________________________
 ```
 
+## TC04: Recover from a corrupted data file
+
+**Aim:** Verify that a corrupted data file is reported and the chatbot continues with an empty task list.
+
+**Command:**
+```powershell
+powershell -NoProfile -Command "Set-Content data\arrodes.txt 'X | 0 | corrupt'; java -cp out\production\ip Arrodes"
+```
+
+**Input:**
+```text
+list
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+    _                       _
+   / \   _ __ _ __ ___   __| | ___  ___
+  / _ \ | '__| '__/ _ \ / _` |/ _ \/ __|
+ / ___ \| |  | | | (_) | (_| |  __/\__ \
+/_/   \_\_|  |_|  \___/ \__,_|\___||___/
+Eyes that watch All living Beings
+The Stigmata from the Primordial Land
+The Great Arrodes is before you!
+State your request!
+____________________________________________________________
+Arrodes could not load your requests.
+____________________________________________________________
+Arrodes recalls your requests:
+____________________________________________________________
+____________________________________________________________
+I shall await your next request...
+____________________________________________________________
+```
+
+**Input:**
+```text
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+    _                       _
+   / \   _ __ _ __ ___   __| | ___  ___
+  / _ \ | '__| '__/ _ \ / _` |/ _ \/ __|
+ / ___ \| |  | | | (_) | (_| |  __/\__ \
+/_/   \_\_|  |_|  \___/ \__,_|\___||___/
+Eyes that watch All living Beings
+The Stigmata from the Primordial Land
+The Great Arrodes is before you!
+State your request!
+____________________________________________________________
+____________________________________________________________
+I shall await your next request...
+____________________________________________________________
+```
+
 ## TC02: Add and list every task type
 
 **Aim:** Verify that todo, deadline, event, and list commands display their stored tasks.

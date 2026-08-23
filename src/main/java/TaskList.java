@@ -1,14 +1,17 @@
 import java.util.ArrayList;
 
 public class TaskList {
-    private int capacity;
-    ArrayList<Task> list = new ArrayList<>();
+    private final int capacity;
+    private final ArrayList<Task> list = new ArrayList<>();
 
     public TaskList() {
         //Default capacity 100
         this.capacity = 100;
     }
     public TaskList(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Task list capacity cannot be negative.");
+        }
         this.capacity = capacity;
     }
 
@@ -17,10 +20,13 @@ public class TaskList {
     }
 
     public boolean isFull() {
-        return list.size() == capacity;
+        return list.size() >= capacity;
     }
 
     public void insert(Task task) throws ArrodesException{
+        if (task == null || task.getDescription() == null || task.getDescription().isBlank()) {
+            throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+        }
         if (isFull()) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
         list.add(task);
     }
