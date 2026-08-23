@@ -6,7 +6,7 @@ Aim: Verify that the application displays its greeting and a farewell when the u
 
 **Command:**
 ```text
-java -cp out\production\ip Arrodes
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
 ```
 
 **Console input:**
@@ -60,7 +60,7 @@ Aim: Verify that todo, deadline, event, and list commands display their stored t
 
 **Command:**
 ```text
-java -cp out\production\ip Arrodes
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
 ```
 
 **Console input:**
@@ -160,7 +160,7 @@ Aim: Verify that task status changes and deletion update the task list.
 
 **Command:**
 ```text
-java -cp out\production\ip Arrodes
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
 ```
 
 **Console input:**

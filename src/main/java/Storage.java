@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * Saves Arrodes tasks to a plain-text file.
  *
- * <p>Reading is deliberately not included yet. Each line stores the task type,
- * completion status, description, and any type-specific time information.</p>
+ * <p>Each line stores the task type, completion status, description, and any
+ * type-specific time information.</p>
  */
 public class Storage {
     /** Location of the task data relative to the project root. */
@@ -55,6 +55,69 @@ public class Storage {
         } catch (IOException exception) {
             throw new ArrodesException("Arrodes could not save your requests.");
         }
+    }
+
+    /**
+     * Loads the saved tasks into a new task list.
+     *
+     * @param capacity maximum number of tasks the returned list can contain
+     * @return saved tasks, or an empty list when no data file exists
+     * @throws ArrodesException if the file cannot be read or contains an invalid record
+     */
+    public TaskList load(int capacity) throws ArrodesException {
+        TaskList taskList = new TaskList(capacity);
+        if (!Files.exists(dataFile)) {
+            return taskList;
+        }
+
+        try {
+            for (String line : Files.readAllLines(dataFile)) {
+                if (!line.isBlank()) {
+                    taskList.insert(parseTask(line));
+                }
+            }
+        } catch (IOException exception) {
+            throw new ArrodesException("Arrodes could not load your requests.");
+        }
+        return taskList;
+    }
+
+    /** Parses one saved line and restores its completion status. */
+    private Task parseTask(String line) throws ArrodesException {
+        String[] fields = line.split("\\s*\\|\\s*", -1);
+        if (fields.length < 3 || fields[0].isBlank() || fields[2].isBlank()) {
+            throw invalidRecord();
+        }
+
+        Task task;
+        switch (fields[0]) {
+        case "T":
+            if (fields.length != 3) throw invalidRecord();
+            task = new Todo(fields[2]);
+            break;
+        case "D":
+            if (fields.length != 4 || fields[3].isBlank()) throw invalidRecord();
+            task = new Deadline(fields[2], fields[3]);
+            break;
+        case "E":
+            if (fields.length != 5 || fields[3].isBlank() || fields[4].isBlank()) throw invalidRecord();
+            task = new Event(fields[2], fields[3], fields[4]);
+            break;
+        default:
+            throw invalidRecord();
+        }
+
+        if ("1".equals(fields[1])) {
+            task.markAsDone();
+        } else if (!"0".equals(fields[1])) {
+            throw invalidRecord();
+        }
+        return task;
+    }
+
+    /** Creates the common exception for malformed storage records. */
+    private ArrodesException invalidRecord() {
+        return new ArrodesException("Arrodes could not load your requests.");
     }
 
     /** Converts one task into the storage format. */

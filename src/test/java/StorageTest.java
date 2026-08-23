@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -16,10 +17,20 @@ public class StorageTest {
         try {
             testSavesAllTaskTypesAndStatuses(temporaryDirectory.resolve("arrodes.txt"));
             testSaveReplacesPreviousSnapshot(temporaryDirectory.resolve("arrodes.txt"));
+            testLoadsAllTaskTypesAndStatuses(temporaryDirectory.resolve("arrodes.txt"));
+            testMissingFileLoadsEmptyList(temporaryDirectory.resolve("missing.txt"));
+            testMalformedRecordIsRejected(temporaryDirectory.resolve("invalid.txt"));
             System.out.println("All storage tests passed.");
         } finally {
-            Files.deleteIfExists(temporaryDirectory.resolve("arrodes.txt"));
-            Files.deleteIfExists(temporaryDirectory);
+            try (var paths = Files.walk(temporaryDirectory)) {
+                paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException exception) {
+                        throw new RuntimeException(exception);
+                    }
+                });
+            }
         }
     }
 
@@ -54,6 +65,39 @@ public class StorageTest {
         storage.save(taskList);
 
         check(Files.readAllLines(dataFile).isEmpty(), "saving should replace the previous snapshot");
+    }
+
+    /** Verifies that saved records are reconstructed as the correct task types. */
+    private static void testLoadsAllTaskTypesAndStatuses(Path dataFile) throws IOException {
+        Files.write(dataFile, List.of(
+                "T | 0 | read book",
+                "D | 1 | return book | June 6th",
+                "E | 0 | project meeting | Aug 6th 2pm | Aug 6th 4pm"));
+
+        TaskList taskList = new Storage(dataFile).load(100);
+        check(taskList.getSize() == 3, "load should restore every saved task");
+        check(taskList.getTaskByIndex(0) instanceof Todo, "load should restore todos");
+        check(taskList.getTaskByIndex(1) instanceof Deadline, "load should restore deadlines");
+        check(taskList.getTaskByIndex(2) instanceof Event, "load should restore events");
+        check(!taskList.getTaskByIndex(0).isDone(), "load should restore incomplete status");
+        check(taskList.getTaskByIndex(1).isDone(), "load should restore completed status");
+    }
+
+    /** Verifies that a missing file is treated as an empty first run. */
+    private static void testMissingFileLoadsEmptyList(Path dataFile) {
+        TaskList taskList = new Storage(dataFile).load(100);
+        check(taskList.getSize() == 0, "missing data file should load an empty list");
+    }
+
+    /** Verifies that malformed records are not silently accepted. */
+    private static void testMalformedRecordIsRejected(Path dataFile) throws IOException {
+        Files.writeString(dataFile, "X | 0 | unknown task");
+        try {
+            new Storage(dataFile).load(100);
+            throw new AssertionError("malformed record should be rejected");
+        } catch (ArrodesException expected) {
+            // Expected result.
+        }
     }
 
     /** Fails a test with a useful message when a condition is false. */

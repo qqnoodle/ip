@@ -43,8 +43,8 @@ public class Arrodes {
 
         boolean EXIT_FLAG = false;
         Scanner scanner = new Scanner(System.in);
-        TaskList taskList = new TaskList(MAX_ITEMS);
         Storage storage = new Storage();
+        TaskList taskList = storage.load(MAX_ITEMS);
 
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();

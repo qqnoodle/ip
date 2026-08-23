@@ -8,7 +8,7 @@ Use one level-two section per test case. The `test-ui` skill executes the comman
 
 **Command:**
 ```powershell
-java -cp out\production\ip Arrodes
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
 ```
 
 **Input:**
@@ -40,7 +40,7 @@ ____________________________________________________________
 
 **Command:**
 ```powershell
-java -cp out\production\ip Arrodes
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
 ```
 
 **Input:**
@@ -97,7 +97,7 @@ ____________________________________________________________
 
 **Command:**
 ```powershell
-java -cp out\production\ip Arrodes
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
 ```
 
 **Input:**
