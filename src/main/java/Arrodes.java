@@ -14,26 +14,6 @@ public class Arrodes {
     /** Maximum number of requests Arrodes can remember during one session. */
     private static final int MAX_ITEMS = 100;
 
-    /** Line printed between user-interface messages. */
-    private static final String SEPARATOR = "_".repeat(60);
-
-    /** ASCII-art banner displayed when the application starts. */
-    private static final String BANNER = """
-            _                       _
-           / \\   _ __ _ __ ___   __| | ___  ___
-          / _ \\ | '__| '__/ _ \\ / _` |/ _ \\/ __|
-         / ___ \\| |  | | | (_) | (_| |  __/\\__ \\
-        /_/   \\_\\_|  |_|  \\___/ \\__,_|\\___||___/
-        """;
-
-    /** Greeting displayed when the application starts. */
-    private static final String GREETING_MESSAGE = "Eyes that watch All living Beings\n"
-            + "The Stigmata from the Primordial Land\n"
-            + "The Great Arrodes is before you!\n"
-            + "State your request!";
-
-    /** Farewell displayed when the user exits the application. */
-    private static final String BYE_MESSAGE = "I shall await your next request...";
 
     /**
      * Greets the user, stores each ordinary request as a task, lists stored tasks,
@@ -42,12 +22,8 @@ public class Arrodes {
      * @param args command-line arguments, which are not used
      */
     public static void main(String[] args) {
-        System.out.println(SEPARATOR);
-        System.out.print(BANNER);
-        System.out.println(GREETING_MESSAGE);
-        System.out.println(SEPARATOR);
-
         boolean EXIT_FLAG = false;
+        Ui ui = new Ui();
         Scanner scanner = new Scanner(System.in);
         Storage storage = new Storage();
         TaskList taskList;
@@ -58,9 +34,10 @@ public class Arrodes {
             taskList = new TaskList(MAX_ITEMS);
         }
 
+        ui.showOnLoadMessage();
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
-            System.out.println(SEPARATOR);
+            ui.showSeparator();
             try {
                 ParsedCommand parsedCommand = CommandParser.parse(command);
                 Command commandKeyword = parsedCommand.getCommand();
@@ -68,7 +45,7 @@ public class Arrodes {
                 Map<String ,String> parameters = parsedCommand.getParameters();
                 switch (commandKeyword) {
                     case BYE:
-                        System.out.println(BYE_MESSAGE);
+                        ui.showOnExitMessage();
                         EXIT_FLAG = true;
                         break;
                     case LIST:
@@ -161,7 +138,7 @@ public class Arrodes {
             } catch (NumberFormatException numberFormatException) {
                 System.out.println("Name the task number for Arrodes to handle, such as: mark/unmark 2");
             } finally {
-                System.out.println(SEPARATOR);
+                ui.showSeparator();
             }
             if (EXIT_FLAG) break;
         }
