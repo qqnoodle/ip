@@ -1,3 +1,6 @@
+package Arrodes.task;
+
+import Arrodes.exception.ArrodesException;
 import java.util.ArrayList;
 
 public class TaskList {

@@ -1,3 +1,8 @@
+package Arrodes.command;
+import Arrodes.storage.Storage;
+import Arrodes.task.TaskList;
+import Arrodes.ui.Ui;
+
 public abstract class Command {
     public Command() {
     }

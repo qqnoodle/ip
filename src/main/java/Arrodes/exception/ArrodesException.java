@@ -1,3 +1,5 @@
+package Arrodes.exception;
+
 public class ArrodesException extends RuntimeException {
     public static final String NO_INPUT = "Arrodes cannot decipher your intentions...";
     public static final String UNKNOWN_COMMAND = "Arrodes has not learn to process this request!!";

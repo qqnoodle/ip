@@ -1,3 +1,5 @@
+package Arrodes.parser;
+
 import java.util.Map;
 
 public class TokenizedCommand {

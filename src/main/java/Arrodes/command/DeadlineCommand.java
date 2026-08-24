@@ -1,3 +1,9 @@
+package Arrodes.command;
+import Arrodes.storage.Storage;
+import Arrodes.task.TaskList;
+import Arrodes.task.Deadline;
+import Arrodes.ui.Ui;
+
 import java.time.LocalDateTime;
 
 public class DeadlineCommand extends Command{
