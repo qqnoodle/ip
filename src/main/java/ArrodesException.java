@@ -9,6 +9,8 @@ public class ArrodesException extends RuntimeException {
     public static final String TASK_LIST_FULL = "Records of Arrodes reached its limit and can no longer accept more request!!!";
     public static final String ITEM_NOT_IN_LIST = "That task does not appear in Arrodes' annals.";
 
+    public static final String NOT_A_NUMBER = "Arrodes require a number mark/unmark 22";
+
     /**
      * Constructs a new ArrodesException with the default RuntimeException
      */

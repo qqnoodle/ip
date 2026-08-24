@@ -1,20 +1,8 @@
-public enum Command {
-    BYE,
-    LIST,
-    MARK,
-    UNMARK,
-    DELETE,
-    TODO,
-    DEADLINE,
-    EVENT,
-    UPCOMING,
-    UNKNOWN;
-
-    public static Command fromString(String input) {
-        try {
-            return Command.valueOf(input.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return UNKNOWN;
-        }
+public abstract class Command {
+    public Command() {
     }
+    public boolean isExit() {
+        return false;
+    }
+    public abstract void execute(Ui ui, TaskList taskList, Storage storage);
 }

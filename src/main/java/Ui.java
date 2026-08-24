@@ -30,6 +30,10 @@ public class Ui {
         return scanner.nextLine();
     }
 
+    public void showMessage(String message) {
+        System.out.println(message);
+    }
+
     public void showOnLoadMessage() {
         System.out.println(BANNER);
         System.out.println(GREETING_MESSAGE);
