@@ -1,4 +1,4 @@
-import java.util.Base64;
+import java.util.Scanner;
 
 public class Ui {
     /** Line printed between user-interface messages. */
@@ -22,7 +22,12 @@ public class Ui {
     /** Farewell displayed when the user exits the application. */
     private static final String BYE_MESSAGE = "I shall await your next request...";
 
+    private Scanner scanner = new Scanner(System.in);
     public Ui() {
+    }
+
+    public String readUserCommand() {
+        return scanner.nextLine();
     }
 
     public void showOnLoadMessage() {
