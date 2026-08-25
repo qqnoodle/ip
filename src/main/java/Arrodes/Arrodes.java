@@ -13,9 +13,14 @@ public class Arrodes {
     /** Maximum number of requests Arrodes can remember during one session. */
     private static final int MAX_ITEMS = 100;
 
+    /** Persists tasks between application runs. */
     private Storage storage;
+    /** Tasks currently held in memory. */
     private TaskList taskList;
+    /** Handles all console input and output. */
     private final Ui ui;
+
+    /** Creates the application and loads its saved tasks, if available. */
     public Arrodes() {
         this.storage = new Storage();
         try {
@@ -26,6 +31,7 @@ public class Arrodes {
         }
         this.ui = new Ui();
     }
+    /** Runs the read-parse-execute loop until an exit command is received. */
     void run() {
         boolean isExit = false;
         ui.showOnLoadMessage();

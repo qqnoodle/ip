@@ -9,12 +9,18 @@ import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.HashMap;
 
+/** Converts raw CLI text into validated command objects. */
 public class CommandParser {
 
+    /** Creates a parser; parsing operations are available as static methods. */
+    public CommandParser() {
+    }
+
     /**
-     * Receives user input and returns ParsedCommand which encapsulates the input
-     * @param userInput input that user gave the CLI when prompted for response
-     * @return TokenizedCommand
+     * Splits raw input into a command word, description, and slash-prefixed parameters.
+     * @param userInput input entered at the CLI prompt
+     * @return tokenized representation of the input
+     * @throws ArrodesException if the input is null or blank, or has malformed parameters
      */
     public static TokenizedCommand tokenize(String userInput) throws ArrodesException{
         if (userInput == null || userInput.isBlank()) {
@@ -40,6 +46,11 @@ public class CommandParser {
         return new TokenizedCommand(command, description, parameters);
     }
 
+    /** Validates tokenized input and creates the corresponding command.
+     * @param userInput raw command entered by the user
+     * @return executable command
+     * @throws ArrodesException if the command or its arguments are invalid
+     */
     public static Command parse(String userInput) {
         TokenizedCommand tokenizeCommand = tokenize(userInput);
 
@@ -122,11 +133,9 @@ public class CommandParser {
     }
 
     /**
-     * Splits the remaining input by /
-     * Input: buy ice cream /from today /by tomorrow
-     * Returns : ["buy ice cream", "from today", "by tomorrow"]
-     * @param remainingInput content of command after the command keyword
-     * @return string split into chunks
+     * Splits the portion after the command word at slash separators and trims each section.
+     * @param remainingInput content after the command keyword
+     * @return description followed by parameter sections
      */
     private static String[] splitByFlag(String remainingInput) {
         String[] sections = remainingInput.split("/");
@@ -137,9 +146,10 @@ public class CommandParser {
     }
 
     /**
-     *
-     * @param sections contains chunks of string after broken down by separator
-     * @return Map of parameters
+     * Converts parameter sections into flag-to-value mappings.
+     * @param sections description followed by parameter sections
+     * @return parsed parameter mappings
+     * @throws ArrodesException if a parameter does not contain both a flag and value
      */
     private static Map<String, String> formParameters(String[] sections) throws ArrodesException {
         Map<String,String> parameters = new HashMap<>();
@@ -155,7 +165,11 @@ public class CommandParser {
         }
         return parameters;
     }
-    /** Parses an ISO date or date-time, normalising date-only values to midnight. */
+    /** Parses an ISO date or date-time, normalising date-only values to midnight.
+     * @param value date in {@code yyyy-MM-dd} or date-time in {@code yyyy-MM-ddTHH:mm} form
+     * @return parsed local date-time
+     * @throws ArrodesException if the value has an invalid format or date
+     */
     private static LocalDateTime parseDateTime(String value) throws ArrodesException {
         boolean hasExpectedShape = value != null
                 && value.matches("\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2})?");

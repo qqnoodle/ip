@@ -6,15 +6,27 @@ import arrodes.ui.Ui;
 
 import java.time.LocalDateTime;
 
+/** Command that adds a deadline task and saves the updated list. */
 public class DeadlineCommand extends Command{
+    /** Text describing the deadline. */
     private final String description;
+    /** Date and optional time by which the task is due. */
     private final LocalDateTime dueBy;
 
+    /** Creates a command for adding a deadline.
+     * @param description task description
+     * @param dueBy deadline date and optional time
+     */
     public DeadlineCommand(String description, LocalDateTime dueBy) {
         this.description = description;
         this.dueBy = dueBy;
     }
 
+    /** Adds the deadline, persists it, and reports the new task count.
+     * @param ui interface used for output
+     * @param taskList list to update
+     * @param storage persistence layer
+     */
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
         taskList.insert(new Deadline(description, dueBy));

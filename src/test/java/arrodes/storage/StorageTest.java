@@ -20,12 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>This is a dependency-free test executable because the project does not
  * currently define a unit-test framework.</p>
  */
+/** Tests persistence, parsing, escaping, and storage failure handling. */
 class StorageTest {
 
     @TempDir
     Path temporaryDirectory;
 
     /** Verifies todo, deadline, event, and completed-task serialization. */
+    /** Verifies savesAllTaskTypesAndStatuses. */
     @Test
     void savesAllTaskTypesAndStatuses() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
@@ -60,6 +62,7 @@ class StorageTest {
     }
 
     /** Verifies that saving an empty list removes tasks from the old snapshot. */
+    /** Verifies saveReplacesPreviousSnapshot. */
     @Test
     void saveReplacesPreviousSnapshot() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
@@ -77,6 +80,7 @@ class StorageTest {
     }
 
     /** Verifies that saved records are reconstructed as the correct task types. */
+    /** Verifies loadsAllTaskTypesAndStatuses. */
     @Test
     void loadsAllTaskTypesAndStatuses() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
@@ -100,6 +104,7 @@ class StorageTest {
     }
 
     /** Verifies that a missing file is treated as an empty first run. */
+    /** Verifies missingFileLoadsEmptyList. */
     @Test
     void missingFileLoadsEmptyList() {
         Path dataFile = temporaryDirectory.resolve("missing.txt");
@@ -110,6 +115,7 @@ class StorageTest {
     }
 
     /** Verifies that malformed records are not silently accepted. */
+    /** Verifies malformedRecordIsRejected. */
     @Test
     void malformedRecordIsRejected() throws IOException {
         Path dataFile = temporaryDirectory.resolve("invalid.txt");
@@ -155,6 +161,7 @@ class StorageTest {
     }
 
     /** Verifies that descriptions and time fields may contain storage delimiters. */
+    /** Verifies escapedFieldsRoundTrip. */
     @Test
     void escapedFieldsRoundTrip() throws IOException {
         Path dataFile = temporaryDirectory.resolve("escaped.txt");
@@ -183,6 +190,7 @@ class StorageTest {
     }
 
     /** Verifies that date and time fields are exposed as java.time values. */
+    /** Verifies dateAndTimeValuesAreTyped. */
     @Test
     void dateAndTimeValuesAreTyped() throws IOException {
         Path dataFile = temporaryDirectory.resolve("typed.txt");
@@ -234,6 +242,7 @@ class StorageTest {
     }
 
     /** Verifies that a file with more records than the configured limit is rejected. */
+    /** Verifies capacityOverflowIsRejected. */
     @Test
     void capacityOverflowIsRejected() throws IOException {
         Path dataFile = temporaryDirectory.resolve("full.txt");
@@ -250,6 +259,7 @@ class StorageTest {
     }
 
     /** Verifies that a failed save cannot replace a directory with a file. */
+    /** Verifies saveFailureDoesNotReplaceDirectory. */
     @Test
     void saveFailureDoesNotReplaceDirectory() throws IOException {
         Path dataFile = temporaryDirectory.resolve("directory-target");

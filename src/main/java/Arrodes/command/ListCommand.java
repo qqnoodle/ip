@@ -3,10 +3,17 @@ import arrodes.storage.Storage;
 import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
+/** Command that displays every task in list order. */
 public class ListCommand extends Command{
+    /** Creates a list command. */
     public ListCommand() {
     }
 
+    /** Displays all remembered tasks.
+     * @param ui interface used for output
+     * @param taskList list to display
+     * @param storage unused storage
+     */
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
         ui.showMessage("arrodes recalls your requests:");
