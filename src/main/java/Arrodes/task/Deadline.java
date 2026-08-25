@@ -10,7 +10,11 @@ public class Deadline extends Task {
     /** Date by which this task should be completed. */
     private final LocalDateTime dueBy;
 
-    /** Creates a deadline with an ISO date or date-time. */
+    /** Creates a deadline with a date and optional time.
+     * @param description text describing the task
+     * @param dueBy date and optional time by which the task is due
+     * @throws IllegalArgumentException if {@code dueBy} is null
+     */
     public Deadline(String description, LocalDateTime dueBy) {
         super(description);
         if (dueBy == null) {
@@ -20,7 +24,7 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns the deadline's due-date text.
+     * Returns the deadline's due date and time.
      *
      * @return due date and time
      */
@@ -28,12 +32,17 @@ public class Deadline extends Task {
         return dueBy;
     }
 
+    /** Returns the task with a deadline prefix and formatted due date.
+     * @return formatted deadline text
+     */
     @Override
     public String toString() {
         return String.format("[D]%s (by: %s)", super.toString(), formatDueBy());
     }
 
-    /** Displays midnight deadlines as dates while retaining non-midnight times. */
+    /** Formats midnight as a date and other deadlines as date-times.
+     * @return formatted due date
+     */
     private String formatDueBy() {
         return dueBy.toLocalTime().equals(java.time.LocalTime.MIDNIGHT)
                 ? dueBy.format(DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH))

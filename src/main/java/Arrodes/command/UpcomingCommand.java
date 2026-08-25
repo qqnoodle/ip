@@ -10,14 +10,26 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+/** Command that displays deadlines and events relevant to a date or time. */
 public class UpcomingCommand extends Command {
+    /** Date or date-time against which tasks are matched. */
     private final LocalDateTime on;
+    /** Whether the query explicitly included a time. */
     private final boolean includesTime;
+    /** Creates an upcoming-task query.
+     * @param on target date or date-time
+     * @param includesTime whether the query includes a time
+     */
     public UpcomingCommand(LocalDateTime on, boolean includesTime) {
         this.on = on;
         this.includesTime = includesTime;
     }
 
+    /** Displays matching deadlines and events.
+     * @param ui interface used for output
+     * @param taskList list to search
+     * @param storage unused storage
+     */
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
         boolean dateOnly = !includesTime;

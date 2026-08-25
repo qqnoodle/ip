@@ -57,6 +57,9 @@ public class Task {
         isDone = false;
     }
 
+    /** Returns the task status and description in display form.
+     * @return formatted task text
+     */
     @Override
     public String toString()  {
         return String.format("[%s] %s", getStatusIcon(), getDescription());
