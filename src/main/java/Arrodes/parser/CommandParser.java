@@ -110,6 +110,11 @@ public class CommandParser {
                 if (tokenizeCommand.hasParameters()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
                 command = new ListCommand();
                 break;
+            case "find":
+                if (!tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+                if (tokenizeCommand.hasParameters()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                command = new FindCommand(tokenizeCommand.getDescription());
+                break;
             case "upcoming":
                 if (tokenizeCommand.hasDescription()) throw new ArrodesException("Description is not needed");
                 if (!parameters.containsKey("on")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);

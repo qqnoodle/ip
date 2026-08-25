@@ -15,13 +15,15 @@ public class Arrodes {
 
     private Storage storage;
     private TaskList taskList;
+    /** Error message to display after the startup greeting when loading fails. */
+    private String loadErrorMessage;
     private final Ui ui;
     public Arrodes() {
         this.storage = new Storage();
         try {
             taskList = storage.load(MAX_ITEMS);
         } catch (ArrodesException exception) {
-            System.out.println(exception.getMessage());
+            loadErrorMessage = exception.getMessage();
             taskList = new TaskList(MAX_ITEMS);
         }
         this.ui = new Ui();
@@ -30,6 +32,9 @@ public class Arrodes {
         boolean isExit = false;
         ui.showOnLoadMessage();
         ui.showSeparator();
+        if (loadErrorMessage != null) {
+            ui.showMessage(loadErrorMessage);
+        }
         while (!isExit) {
             String userCommand = ui.readUserCommand();
             ui.showSeparator();

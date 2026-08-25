@@ -8,7 +8,7 @@ Use one level-two section per test case. The `test-ui` skill executes the comman
 
 **Command:**
 ```powershell
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Input:**
@@ -40,7 +40,7 @@ ____________________________________________________________
 
 **Command:**
 ```powershell
-powershell -NoProfile -Command "Set-Content data\arrodes.txt 'X | 0 | corrupt'; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Set-Content data\arrodes.txt 'X | 0 | corrupt'; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Input:**
@@ -100,7 +100,7 @@ ____________________________________________________________
 
 **Command:**
 ```powershell
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Input:**
@@ -157,7 +157,7 @@ ____________________________________________________________
 
 **Command:**
 ```powershell
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Input:**
@@ -224,7 +224,7 @@ ____________________________________________________________
 
 **Command:**
 ```powershell
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Input:**
@@ -260,7 +260,7 @@ ____________________________________________________________
 
 **Command:**
 ```powershell
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Input:**
@@ -322,13 +322,56 @@ I shall await your next request...
 ____________________________________________________________
 ```
 
+## TC08: Find tasks by description
+
+**Aim:** Verify that find displays matching tasks with their original list numbers and reports when there are no matches.
+
+**Command:**
+```powershell
+powershell -NoProfile -Command "Set-Content data\arrodes.txt 'T | 1 | read book','D | 1 | return book | 2026-06-06','T | 1 | wash dishes'; java -cp build\classes\java\main arrodes.Arrodes"
+```
+
+**Input:**
+```text
+find book
+find laptop
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+    _                       _
+   / \   _ __ _ __ ___   __| | ___  ___
+  / _ \ | '__| '__/ _ \ / _` |/ _ \/ __|
+ / ___ \| |  | | | (_) | (_| |  __/\__ \
+/_/   \_\_|  |_|  \___/ \__,_|\___||___/
+Eyes that watch All living Beings
+The Stigmata from the Primordial Land
+The Great Arrodes is before you!
+State your request!
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: Jun 06 2026)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+Arrodes found no matching tasks.
+____________________________________________________________
+____________________________________________________________
+I shall await your next request...
+____________________________________________________________
+```
+
 ## TC06: Validate event time ordering
 
 **Aim:** Verify that same-day date-only events are accepted and reversed event times produce a warning.
 
 **Command:**
 ```powershell
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Input:**

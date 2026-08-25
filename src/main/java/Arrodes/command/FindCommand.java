@@ -1,0 +1,48 @@
+package arrodes.command;
+
+import arrodes.storage.Storage;
+import arrodes.task.Task;
+import arrodes.task.TaskList;
+import arrodes.ui.Ui;
+import java.util.Locale;
+
+/**
+ * Searches the remembered tasks for descriptions containing a keyword.
+ */
+public class FindCommand extends Command {
+    /** Keyword used for the case-insensitive description search. */
+    private final String keyword;
+
+    /**
+     * Creates a command that searches task descriptions for the given keyword.
+     *
+     * @param keyword text to find in each task description
+     */
+    public FindCommand(String keyword) {
+        this.keyword = keyword;
+    }
+
+    /**
+     * Displays every task whose description contains the keyword.
+     *
+     * @param ui interface used to display the matching tasks
+     * @param taskList list of tasks to search
+     * @param storage storage used by commands that change tasks; unused here
+     */
+    @Override
+    public void execute(Ui ui, TaskList taskList, Storage storage) {
+        boolean found = false;
+        ui.showMessage("Here are the matching tasks in your list:");
+        for (int i = 0; i < taskList.getSize(); i++) {
+            Task task = taskList.getTaskByIndex(i);
+            if (task.getDescription().toLowerCase(Locale.ROOT)
+                    .contains(keyword.toLowerCase(Locale.ROOT))) {
+                ui.showMessage((i + 1) + "." + task);
+                found = true;
+            }
+        }
+        if (!found) {
+            ui.showMessage("Arrodes found no matching tasks.");
+        }
+    }
+}

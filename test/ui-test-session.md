@@ -6,7 +6,7 @@ Aim: Verify that the application displays its greeting and a farewell when the u
 
 **Command:**
 ```text
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Console input:**
@@ -60,7 +60,7 @@ Aim: Verify that a corrupted data file is reported and the chatbot continues wit
 
 **Command:**
 ```text
-powershell -NoProfile -Command "Set-Content data\arrodes.txt 'X | 0 | corrupt'; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Set-Content data\arrodes.txt 'X | 0 | corrupt'; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Console input:**
@@ -123,7 +123,7 @@ Aim: Verify that todo, deadline, event, and list commands display their stored t
 
 **Command:**
 ```text
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Console input:**
@@ -223,7 +223,7 @@ Aim: Verify that task status changes and deletion update the task list.
 
 **Command:**
 ```text
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Console input:**
@@ -341,7 +341,7 @@ Aim: Verify that a correctly shaped but impossible date, such as February 31, is
 
 **Command:**
 ```text
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Console input:**
@@ -402,7 +402,7 @@ Aim: Verify that upcoming lists matching deadlines and events for date-only and 
 
 **Command:**
 ```text
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Console input:**
@@ -516,13 +516,87 @@ ____________________________________________________________
 
 Exit code: 0
 
-## 7. TC06: Validate event time ordering — PASS
+## 7. TC08: Find tasks by description — PASS
+
+Aim: Verify that find displays matching tasks with their original list numbers and reports when there are no matches.
+
+**Command:**
+```text
+powershell -NoProfile -Command "Set-Content data\arrodes.txt 'T | 1 | read book','D | 1 | return book | 2026-06-06','T | 1 | wash dishes'; java -cp build\classes\java\main arrodes.Arrodes"
+```
+
+**Console input:**
+```text
+find book
+find laptop
+bye
+```
+
+**Expected output:**
+```text
+____________________________________________________________
+    _                       _
+   / \   _ __ _ __ ___   __| | ___  ___
+  / _ \ | '__| '__/ _ \ / _` |/ _ \/ __|
+ / ___ \| |  | | | (_) | (_| |  __/\__ \
+/_/   \_\_|  |_|  \___/ \__,_|\___||___/
+Eyes that watch All living Beings
+The Stigmata from the Primordial Land
+The Great Arrodes is before you!
+State your request!
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: Jun 06 2026)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+Arrodes found no matching tasks.
+____________________________________________________________
+____________________________________________________________
+I shall await your next request...
+____________________________________________________________
+
+```
+
+**Actual output:**
+```text
+____________________________________________________________
+    _                       _
+   / \   _ __ _ __ ___   __| | ___  ___
+  / _ \ | '__| '__/ _ \ / _` |/ _ \/ __|
+ / ___ \| |  | | | (_) | (_| |  __/\__ \
+/_/   \_\_|  |_|  \___/ \__,_|\___||___/
+Eyes that watch All living Beings
+The Stigmata from the Primordial Land
+The Great Arrodes is before you!
+State your request!
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][X] read book
+2.[D][X] return book (by: Jun 06 2026)
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+Arrodes found no matching tasks.
+____________________________________________________________
+____________________________________________________________
+I shall await your next request...
+____________________________________________________________
+
+```
+
+Exit code: 0
+
+## 8. TC06: Validate event time ordering — PASS
 
 Aim: Verify that same-day date-only events are accepted and reversed event times produce a warning.
 
 **Command:**
 ```text
-powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp out\production\ip Arrodes"
+powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction SilentlyContinue; java -cp build\classes\java\main arrodes.Arrodes"
 ```
 
 **Console input:**
