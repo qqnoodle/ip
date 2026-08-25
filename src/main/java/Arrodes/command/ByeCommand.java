@@ -1,7 +1,7 @@
-package Arrodes.command;
-import Arrodes.storage.Storage;
-import Arrodes.task.TaskList;
-import Arrodes.ui.Ui;
+package arrodes.command;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.ui.Ui;
 
 public class ByeCommand extends Command{
     public ByeCommand() {

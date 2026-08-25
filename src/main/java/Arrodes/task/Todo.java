@@ -1,4 +1,4 @@
-package Arrodes.task;
+package arrodes.task;
 
 public class Todo extends Task{
 

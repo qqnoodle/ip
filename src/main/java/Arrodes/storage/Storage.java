@@ -1,7 +1,7 @@
-package Arrodes.storage;
+package arrodes.storage;
 
-import Arrodes.exception.ArrodesException;
-import Arrodes.task.*;
+import arrodes.exception.ArrodesException;
+import arrodes.task.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

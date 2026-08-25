@@ -1,8 +1,8 @@
-package Arrodes.command;
-import Arrodes.storage.Storage;
-import Arrodes.task.TaskList;
-import Arrodes.task.Task;
-import Arrodes.ui.Ui;
+package arrodes.command;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.task.Task;
+import arrodes.ui.Ui;
 
 public class MarkCommand extends Command{
     private final int taskNumber;
@@ -16,7 +16,7 @@ public class MarkCommand extends Command{
         Task task = taskList.getTaskByNumber(taskNumber);
         task.markAsDone();
         storage.save(taskList);
-        ui.showMessage("A worthy task! Arrodes has marked it as done:");
+        ui.showMessage("A worthy task! arrodes has marked it as done:");
         ui.showMessage("  " + task);
     }
 }

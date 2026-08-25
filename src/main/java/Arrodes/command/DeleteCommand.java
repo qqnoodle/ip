@@ -1,8 +1,8 @@
-package Arrodes.command;
-import Arrodes.storage.Storage;
-import Arrodes.task.TaskList;
-import Arrodes.task.Task;
-import Arrodes.ui.Ui;
+package arrodes.command;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.task.Task;
+import arrodes.ui.Ui;
 
 public class DeleteCommand extends Command{
     private final int taskNumber;

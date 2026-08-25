@@ -1,4 +1,4 @@
-package Arrodes.exception;
+package arrodes.exception;
 
 public class ArrodesException extends RuntimeException {
     public static final String NO_INPUT = "Arrodes cannot decipher your intentions...";

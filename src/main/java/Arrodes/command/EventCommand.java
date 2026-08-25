@@ -1,8 +1,8 @@
-package Arrodes.command;
-import Arrodes.storage.Storage;
-import Arrodes.task.TaskList;
-import Arrodes.task.Event;
-import Arrodes.ui.Ui;
+package arrodes.command;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.task.Event;
+import arrodes.ui.Ui;
 
 import java.time.LocalDateTime;
 

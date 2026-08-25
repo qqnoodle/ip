@@ -1,4 +1,4 @@
-package Arrodes.ui;
+package arrodes.ui;
 import java.util.Scanner;
 
 public class Ui {

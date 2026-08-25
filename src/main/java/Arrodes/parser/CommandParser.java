@@ -1,7 +1,7 @@
-package Arrodes.parser;
+package arrodes.parser;
 
-import Arrodes.command.*;
-import Arrodes.exception.ArrodesException;
+import arrodes.command.*;
+import arrodes.exception.ArrodesException;
 import javax.swing.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

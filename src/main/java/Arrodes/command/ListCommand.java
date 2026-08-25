@@ -1,7 +1,7 @@
-package Arrodes.command;
-import Arrodes.storage.Storage;
-import Arrodes.task.TaskList;
-import Arrodes.ui.Ui;
+package arrodes.command;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.ui.Ui;
 
 public class ListCommand extends Command{
     public ListCommand() {
@@ -9,7 +9,7 @@ public class ListCommand extends Command{
 
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
-        ui.showMessage("Arrodes recalls your requests:");
+        ui.showMessage("arrodes recalls your requests:");
         for (int i = 0; i < taskList.getSize(); i++) {
             ui.showMessage((i + 1) + "." + taskList.getTaskByIndex(i).toString());
         }

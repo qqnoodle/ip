@@ -1,10 +1,10 @@
-package Arrodes;
-import Arrodes.task.TaskList;
-import Arrodes.storage.Storage;
-import Arrodes.ui.Ui;
-import Arrodes.parser.CommandParser;
-import Arrodes.command.Command;
-import Arrodes.exception.ArrodesException;
+package arrodes;
+import arrodes.task.TaskList;
+import arrodes.storage.Storage;
+import arrodes.ui.Ui;
+import arrodes.parser.CommandParser;
+import arrodes.command.Command;
+import arrodes.exception.ArrodesException;
 
 /**
  * Runs the Arrodes command-line application.

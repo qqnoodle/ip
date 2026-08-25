@@ -1,4 +1,4 @@
-package Arrodes.task;
+package arrodes.task;
 
 /**
  * Represents one task remembered by Arrodes.

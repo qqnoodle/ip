@@ -1,4 +1,4 @@
-package Arrodes.parser;
+package arrodes.parser;
 
 import java.util.Map;
 
