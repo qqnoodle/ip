@@ -1,3 +1,8 @@
+package arrodes.command;
+
+import arrodes.storage.Storage;
+import arrodes.task.*;
+import arrodes.ui.Ui;
 import javax.swing.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +28,7 @@ public class UpcomingCommand extends Command {
         LocalDateTime deadlineCutoff = dateOnly ? dayEnd : on;
         boolean found = false;
 
-        ui.showMessage("Arrodes recalls requests for " + on.format(displayFormat) + ":");
+        ui.showMessage("arrodes recalls requests for " + on.format(displayFormat) + ":");
         for (int i = 0; i < taskList.getSize(); i++) {
             Task task = taskList.getTaskByIndex(i);
             boolean matches = false;
@@ -41,7 +46,7 @@ public class UpcomingCommand extends Command {
             }
         }
         if (!found) {
-            ui.showMessage("Arrodes found no deadlines or events for that date or time.");
+            ui.showMessage("arrodes found no deadlines or events for that date or time.");
         }
     }
 }

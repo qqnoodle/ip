@@ -1,3 +1,9 @@
+package arrodes.command;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.task.Event;
+import arrodes.ui.Ui;
+
 import java.time.LocalDateTime;
 
 public class EventCommand extends Command{

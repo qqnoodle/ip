@@ -1,19 +1,21 @@
-import java.time.LocalDateTime;
+package arrodes.command;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.task.Todo;
+import arrodes.ui.Ui;
 
-public class DeadlineCommand extends Command{
+public class TodoCommand extends Command{
     private final String description;
-    private final LocalDateTime dueBy;
 
-    public DeadlineCommand(String description, LocalDateTime dueBy) {
+    public TodoCommand(String description) {
         this.description = description;
-        this.dueBy = dueBy;
     }
 
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
-        taskList.insert(new Deadline(description, dueBy));
+        taskList.insert(new Todo(description));
         storage.save(taskList);
-        System.out.println("Inscribing request: \n"
+        ui.showMessage("Inscribing request: \n"
                 + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
                 + taskList.getSize() + " tasks are being tracked");
     }
