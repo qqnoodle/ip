@@ -1,4 +1,5 @@
 package arrodes.command;
+import arrodes.exception.ArrodesException;
 import arrodes.storage.Storage;
 import arrodes.task.TaskList;
 import arrodes.task.Event;
@@ -23,6 +24,9 @@ public class EventCommand extends Command{
 
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
+        if (to.isBefore(from)) {
+            throw new ArrodesException(ArrodesException.INVALID_EVENT_TIME);
+        }
         taskList.insert(new Event(description, from, to, startIncludesTime, endIncludesTime));
         storage.save(taskList);
         System.out.println("Inscribing request: \n"

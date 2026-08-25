@@ -36,7 +36,8 @@ public class Ui {
     }
 
     public void showOnLoadMessage() {
-        System.out.println(BANNER);
+        showSeparator();
+        System.out.print(BANNER);
         System.out.println(GREETING_MESSAGE);
     }
 

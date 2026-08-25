@@ -99,6 +99,25 @@ class CommandParserTest {
                 () -> CommandParser.parse("list /on 2025-12-01"));
     }
 
+    /** Verifies that the find keyword creates a command with a search term. */
+    @Test
+    void parse_findCommand_returnsFindCommand() {
+        assertInstanceOf(FindCommand.class, CommandParser.parse("find book"));
+    }
+
+    /** Verifies that find requires a non-empty search term. */
+    @Test
+    void parse_findWithoutKeyword_exceptionThrown() {
+        assertThrows(ArrodesException.class, () -> CommandParser.parse("find"));
+    }
+
+    /** Verifies that find rejects flag-like parameters. */
+    @Test
+    void parse_findWithParameter_exceptionThrown() {
+        assertThrows(ArrodesException.class,
+                () -> CommandParser.parse("find book /from shelf"));
+    }
+
     // ── parse – mark ──────────────────────────────────────────────────────────
 
     @Test
