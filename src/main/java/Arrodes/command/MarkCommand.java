@@ -1,11 +1,11 @@
 package arrodes.command;
 import arrodes.storage.Storage;
-import arrodes.task.TaskList;
 import arrodes.task.Task;
+import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
 /** Command that marks a numbered task as completed. */
-public class MarkCommand extends Command{
+public class MarkCommand extends Command {
     /** One-based number of the task to complete. */
     private final int taskNumber;
 
@@ -13,7 +13,7 @@ public class MarkCommand extends Command{
      * @param taskNumber one-based task number
      */
     public MarkCommand(int taskNumber) {
-       this.taskNumber = taskNumber;
+        this.taskNumber = taskNumber;
     }
 
     /** Marks the task, persists the list, and reports the result.

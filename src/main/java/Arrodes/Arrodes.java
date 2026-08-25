@@ -1,10 +1,10 @@
 package arrodes;
-import arrodes.task.TaskList;
-import arrodes.storage.Storage;
-import arrodes.ui.Ui;
-import arrodes.parser.CommandParser;
 import arrodes.command.Command;
 import arrodes.exception.ArrodesException;
+import arrodes.parser.CommandParser;
+import arrodes.storage.Storage;
+import arrodes.task.TaskList;
+import arrodes.ui.Ui;
 
 /**
  * Runs the Arrodes command-line application.
@@ -16,6 +16,8 @@ public class Arrodes {
     private Storage storage;
     private TaskList taskList;
     private final Ui ui;
+
+    /** Creates an Arrodes application and loads its saved tasks. */
     public Arrodes() {
         this.storage = new Storage();
         try {
@@ -42,7 +44,9 @@ public class Arrodes {
             } finally {
                 ui.showSeparator();
             }
-            if (isExit) break;
+            if (isExit) {
+                break;
+            }
         }
     }
 

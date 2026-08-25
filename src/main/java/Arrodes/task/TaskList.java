@@ -1,6 +1,7 @@
 package arrodes.task;
 
 import arrodes.exception.ArrodesException;
+
 import java.util.ArrayList;
 
 /** Bounded, ordered collection of tasks remembered by Arrodes. */
@@ -12,9 +13,9 @@ public class TaskList {
 
     /** Creates an empty list with the default capacity of 100 tasks. */
     public TaskList() {
-        //Default capacity 100
         this.capacity = 100;
     }
+
     /** Creates an empty list with a chosen capacity.
      * @param capacity maximum number of tasks
      * @throws IllegalArgumentException if capacity is negative
@@ -44,11 +45,13 @@ public class TaskList {
      * @param task task to add
      * @throws ArrodesException if the task is invalid or the list is full
      */
-    public void insert(Task task) throws ArrodesException{
+    public void insert(Task task) throws ArrodesException {
         if (task == null || task.getDescription() == null || task.getDescription().isBlank()) {
             throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
         }
-        if (isFull()) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
+        if (isFull()) {
+            throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
+        }
         list.add(task);
     }
 
@@ -56,9 +59,11 @@ public class TaskList {
      * @param itemNumber one-based task number
      * @throws ArrodesException if no task has that number
      */
-    public void delete(int itemNumber) throws ArrodesException{
+    public void delete(int itemNumber) throws ArrodesException {
         int itemIndex = itemNumber - 1;
-        if ((itemIndex) >= list.size() || itemIndex < 0) throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        if (itemIndex >= list.size() || itemIndex < 0) {
+            throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        }
         list.remove(itemIndex);
     }
 
@@ -68,7 +73,9 @@ public class TaskList {
      * @throws ArrodesException if the index is outside the list
      */
     public Task getTaskByIndex(int itemIndex) {
-        if ((itemIndex) >= list.size() || itemIndex < 0) throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        if (itemIndex >= list.size() || itemIndex < 0) {
+            throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        }
         return list.get(itemIndex);
     }
 

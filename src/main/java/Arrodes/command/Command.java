@@ -8,6 +8,7 @@ public abstract class Command {
     /** Creates a command. */
     public Command() {
     }
+
     /** Returns whether executing this command should terminate Arrodes.
      * @return {@code true} only for commands that exit the application
      */

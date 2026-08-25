@@ -1,13 +1,13 @@
 package arrodes.command;
 import arrodes.storage.Storage;
-import arrodes.task.TaskList;
 import arrodes.task.Deadline;
+import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
 import java.time.LocalDateTime;
 
 /** Command that adds a deadline task and saves the updated list. */
-public class DeadlineCommand extends Command{
+public class DeadlineCommand extends Command {
     /** Text describing the deadline. */
     private final String description;
     /** Date and optional time by which the task is due. */

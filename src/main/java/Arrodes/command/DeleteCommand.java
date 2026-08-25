@@ -1,11 +1,11 @@
 package arrodes.command;
 import arrodes.storage.Storage;
-import arrodes.task.TaskList;
 import arrodes.task.Task;
+import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
 /** Command that removes a numbered task and saves the updated list. */
-public class DeleteCommand extends Command{
+public class DeleteCommand extends Command {
     /** One-based number of the task to remove. */
     private final int taskNumber;
 

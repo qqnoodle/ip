@@ -5,7 +5,7 @@ import arrodes.task.Todo;
 import arrodes.ui.Ui;
 
 /** Command that adds a todo task and saves the updated list. */
-public class TodoCommand extends Command{
+public class TodoCommand extends Command {
     /** Text describing the todo. */
     private final String description;
 

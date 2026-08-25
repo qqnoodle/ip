@@ -1,14 +1,14 @@
 package arrodes.command;
 import arrodes.exception.ArrodesException;
 import arrodes.storage.Storage;
-import arrodes.task.TaskList;
 import arrodes.task.Event;
+import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
 import java.time.LocalDateTime;
 
 /** Command that adds an event task and saves the updated list. */
-public class EventCommand extends Command{
+public class EventCommand extends Command {
     /** Text describing the event. */
     private final String description;
     /** Event start. */
@@ -27,7 +27,8 @@ public class EventCommand extends Command{
      * @param startIncludesTime whether the start included a time
      * @param endIncludesTime whether the end included a time
      */
-    public EventCommand(String description, LocalDateTime from, LocalDateTime to, boolean startIncludesTime, boolean endIncludesTime) {
+    public EventCommand(String description, LocalDateTime from, LocalDateTime to,
+                        boolean startIncludesTime, boolean endIncludesTime) {
         this.description = description;
         this.from = from;
         this.to = to;

@@ -71,6 +71,7 @@ bye
 
 **Expected output:**
 ```text
+Arrodes could not load your requests.
 ____________________________________________________________
     _                       _
    / \   _ __ _ __ ___   __| | ___  ___
@@ -82,7 +83,6 @@ The Stigmata from the Primordial Land
 The Great Arrodes is before you!
 State your request!
 ____________________________________________________________
-Arrodes could not load your requests.
 ____________________________________________________________
 Arrodes recalls your requests:
 ____________________________________________________________
@@ -94,6 +94,7 @@ ____________________________________________________________
 
 **Actual output:**
 ```text
+Arrodes could not load your requests.
 ____________________________________________________________
     _                       _
    / \   _ __ _ __ ___   __| | ___  ___
@@ -105,7 +106,6 @@ The Stigmata from the Primordial Land
 The Great Arrodes is before you!
 State your request!
 ____________________________________________________________
-Arrodes could not load your requests.
 ____________________________________________________________
 Arrodes recalls your requests:
 ____________________________________________________________

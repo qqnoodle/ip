@@ -1,11 +1,11 @@
 package arrodes.command;
 import arrodes.storage.Storage;
-import arrodes.task.TaskList;
 import arrodes.task.Task;
+import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
 /** Command that marks a numbered task as incomplete. */
-public class UnmarkCommand extends Command{
+public class UnmarkCommand extends Command {
     /** One-based number of the task to reopen. */
     private final int taskNumber;
 

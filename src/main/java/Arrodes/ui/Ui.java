@@ -1,4 +1,5 @@
 package arrodes.ui;
+
 import java.util.Scanner;
 
 /** Handles console input and output for Arrodes. */
@@ -25,7 +26,7 @@ public class Ui {
     private static final String BYE_MESSAGE = "I shall await your next request...";
 
     /** Reads commands from standard input. */
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
     /** Creates a console user interface. */
     public Ui() {
     }

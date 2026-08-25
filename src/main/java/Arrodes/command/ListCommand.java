@@ -4,7 +4,7 @@ import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
 /** Command that displays every task in list order. */
-public class ListCommand extends Command{
+public class ListCommand extends Command {
     /** Creates a list command. */
     public ListCommand() {
     }

@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /** Converts raw CLI text into validated command objects. */
 public class CommandParser {
@@ -22,7 +22,7 @@ public class CommandParser {
      * @return tokenized representation of the input
      * @throws ArrodesException if the input is null or blank, or has malformed parameters
      */
-    public static TokenizedCommand tokenize(String userInput) throws ArrodesException{
+    public static TokenizedCommand tokenize(String userInput) throws ArrodesException {
         if (userInput == null || userInput.isBlank()) {
             throw new ArrodesException(ArrodesException.NO_INPUT);
         }
