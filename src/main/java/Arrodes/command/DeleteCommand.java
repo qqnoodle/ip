@@ -4,7 +4,8 @@ import arrodes.task.TaskList;
 import arrodes.task.Task;
 import arrodes.ui.Ui;
 
-public class DeleteCommand extends Command{
+/** Deletes a numbered task from the task list. */
+public class DeleteCommand extends Command {
     private final int taskNumber;
 
     public DeleteCommand(int taskNumber) {

@@ -1,7 +1,9 @@
 package arrodes.task;
 
-public class Todo extends Task{
+/** A task without a deadline or event interval. */
+public class Todo extends Task {
 
+    /** Creates a todo task with the given description. */
     public Todo(String description) {
         super(description);
     }

@@ -6,7 +6,8 @@ import arrodes.ui.Ui;
 
 import java.time.LocalDateTime;
 
-public class DeadlineCommand extends Command{
+/** Adds a deadline task to the task list. */
+public class DeadlineCommand extends Command {
     private final String description;
     private final LocalDateTime dueBy;
 

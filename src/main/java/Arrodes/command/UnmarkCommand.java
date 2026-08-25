@@ -4,7 +4,8 @@ import arrodes.task.TaskList;
 import arrodes.task.Task;
 import arrodes.ui.Ui;
 
-public class UnmarkCommand extends Command{
+/** Marks a numbered task as incomplete. */
+public class UnmarkCommand extends Command {
     private final int taskNumber;
 
     public UnmarkCommand(int taskNumber) {

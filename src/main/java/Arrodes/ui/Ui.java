@@ -1,6 +1,8 @@
 package arrodes.ui;
+
 import java.util.Scanner;
 
+/** Handles console input and output for Arrodes. */
 public class Ui {
     /** Line printed between user-interface messages. */
     private static final String SEPARATOR = "_".repeat(60);
@@ -23,7 +25,9 @@ public class Ui {
     /** Farewell displayed when the user exits the application. */
     private static final String BYE_MESSAGE = "I shall await your next request...";
 
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
+
+    /** Creates a console user interface backed by standard input. */
     public Ui() {
     }
 

@@ -2,6 +2,7 @@ package arrodes.parser;
 
 import java.util.Map;
 
+/** Stores the command keyword, description, and slash-prefixed parameters. */
 public class TokenizedCommand {
     private final String command;
     private final String description;

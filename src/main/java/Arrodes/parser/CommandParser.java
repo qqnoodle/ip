@@ -1,14 +1,23 @@
 package arrodes.parser;
 
-import arrodes.command.*;
+import arrodes.command.ByeCommand;
+import arrodes.command.Command;
+import arrodes.command.DeadlineCommand;
+import arrodes.command.DeleteCommand;
+import arrodes.command.EventCommand;
+import arrodes.command.ListCommand;
+import arrodes.command.MarkCommand;
+import arrodes.command.TodoCommand;
+import arrodes.command.UnmarkCommand;
+import arrodes.command.UpcomingCommand;
 import arrodes.exception.ArrodesException;
-import javax.swing.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
+/** Parses command-line input into executable commands. */
 public class CommandParser {
 
     /**
@@ -16,7 +25,7 @@ public class CommandParser {
      * @param userInput input that user gave the CLI when prompted for response
      * @return TokenizedCommand
      */
-    public static TokenizedCommand tokenize(String userInput) throws ArrodesException{
+    public static TokenizedCommand tokenize(String userInput) throws ArrodesException {
         if (userInput == null || userInput.isBlank()) {
             throw new ArrodesException(ArrodesException.NO_INPUT);
         }
@@ -31,7 +40,9 @@ public class CommandParser {
         Map<String,String> parameters = new HashMap<>();
 
         //description unavailable
-        if (splitInput.length < 2) return new TokenizedCommand(command,description,parameters);
+        if (splitInput.length < 2) {
+            return new TokenizedCommand(command, description, parameters);
+        }
 
         String remainingInput = splitInput[1];
         String[] sections = splitByFlag(remainingInput);
@@ -47,12 +58,18 @@ public class CommandParser {
         Command command;
         switch (tokenizeCommand.getCommand()) {
             case "bye":
-                if (tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 command = new ByeCommand();
                 break;
             case "mark":
-                if (!tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                if (tokenizeCommand.hasParameters()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (!tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+                }
+                if (tokenizeCommand.hasParameters()) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 try {
                     command = new MarkCommand(Integer.parseInt(tokenizeCommand.getDescription()));
                 } catch (NumberFormatException e) {
@@ -60,8 +77,12 @@ public class CommandParser {
                 }
                 break;
             case "unmark":
-                if (!tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                if (tokenizeCommand.hasParameters()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (!tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+                }
+                if (tokenizeCommand.hasParameters()) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 try {
                     command = new UnmarkCommand(Integer.parseInt(tokenizeCommand.getDescription()));
                 } catch (NumberFormatException e) {
@@ -69,8 +90,12 @@ public class CommandParser {
                 }
                 break;
             case "delete":
-                if (!tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                if (tokenizeCommand.hasParameters()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (!tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+                }
+                if (tokenizeCommand.hasParameters()) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 try {
                     command = new DeleteCommand(Integer.parseInt(tokenizeCommand.getDescription()));
                 } catch (NumberFormatException e) {
@@ -78,25 +103,41 @@ public class CommandParser {
                 }
                 break;
             case "todo":
-                if (!tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                if (tokenizeCommand.hasParameters()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (!tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+                }
+                if (tokenizeCommand.hasParameters()) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 command = new TodoCommand(tokenizeCommand.getDescription());
                 break;
             case "deadline":
-                if (!tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                if (!parameters.containsKey("by")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (!tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+                }
+                if (!parameters.containsKey("by")) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 command = new DeadlineCommand(tokenizeCommand.getDescription()
                         ,parseDateTime(parameters.get("by")));
                 break;
             case "event":
-                if (!tokenizeCommand.hasDescription()) throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                if (!parameters.containsKey("from")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                if (!parameters.containsKey("to")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (!tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+                }
+                if (!parameters.containsKey("from")) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
+                if (!parameters.containsKey("to")) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 String from = parameters.get("from");
                 String to = parameters.get("to");
 
                 //Bitwise Xor, we only want both to be LocalDate or LocalDateTime
-                if (from.contains("T") ^ to.contains("T")) throw new ArrodesException("Time provided should both be same format");
+                if (from.contains("T") ^ to.contains("T")) {
+                    throw new ArrodesException("Time provided should both be same format");
+                }
                 //Insert Code Between
 
                 command = new EventCommand(tokenizeCommand.getDescription()
@@ -106,13 +147,21 @@ public class CommandParser {
                         ,to.contains("T"));
                 break;
             case "list":
-                if (tokenizeCommand.hasDescription()) throw new ArrodesException("try list without other words");
-                if (tokenizeCommand.hasParameters()) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException("try list without other words");
+                }
+                if (tokenizeCommand.hasParameters()) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 command = new ListCommand();
                 break;
             case "upcoming":
-                if (tokenizeCommand.hasDescription()) throw new ArrodesException("Description is not needed");
-                if (!parameters.containsKey("on")) throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                if (tokenizeCommand.hasDescription()) {
+                    throw new ArrodesException("Description is not needed");
+                }
+                if (!parameters.containsKey("on")) {
+                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+                }
                 command = new UpcomingCommand(parseDateTime(parameters.get("on")), parameters.get("on").contains("T"));
                 break;
             default:

@@ -1,7 +1,11 @@
 package arrodes.storage;
 
 import arrodes.exception.ArrodesException;
-import arrodes.task.*;
+import arrodes.task.Deadline;
+import arrodes.task.Event;
+import arrodes.task.Task;
+import arrodes.task.TaskList;
+import arrodes.task.Todo;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -135,15 +139,21 @@ public class Storage {
         Task task;
         switch (fields.get(0)) {
         case "T":
-            if (fields.size() != 3) throw invalidRecord();
+            if (fields.size() != 3) {
+                throw invalidRecord();
+            }
             task = new Todo(fields.get(2));
             break;
         case "D":
-            if (fields.size() != 4 || fields.get(3).isBlank()) throw invalidRecord();
+            if (fields.size() != 4 || fields.get(3).isBlank()) {
+                throw invalidRecord();
+            }
             task = new Deadline(fields.get(2), parseDateTime(fields.get(3)));
             break;
         case "E":
-            if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) throw invalidRecord();
+            if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) {
+                throw invalidRecord();
+            }
             try {
                 task = new Event(fields.get(2), parseDateTime(fields.get(3)), parseDateTime(fields.get(4)),
                         fields.get(3).contains("T"), fields.get(4).contains("T"));

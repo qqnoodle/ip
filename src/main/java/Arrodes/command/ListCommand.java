@@ -3,7 +3,8 @@ import arrodes.storage.Storage;
 import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
-public class ListCommand extends Command{
+/** Displays all tasks in the task list. */
+public class ListCommand extends Command {
     public ListCommand() {
     }
 

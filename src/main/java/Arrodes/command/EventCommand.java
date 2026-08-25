@@ -6,7 +6,8 @@ import arrodes.ui.Ui;
 
 import java.time.LocalDateTime;
 
-public class EventCommand extends Command{
+/** Adds an event task to the task list. */
+public class EventCommand extends Command {
     private final String description;
     private final LocalDateTime from;
     private final LocalDateTime to;

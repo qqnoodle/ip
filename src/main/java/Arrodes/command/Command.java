@@ -3,6 +3,7 @@ import arrodes.storage.Storage;
 import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
+/** Represents one parsed command that can operate on Arrodes state. */
 public abstract class Command {
     public Command() {
     }

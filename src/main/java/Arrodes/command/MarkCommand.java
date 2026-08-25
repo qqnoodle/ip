@@ -4,7 +4,8 @@ import arrodes.task.TaskList;
 import arrodes.task.Task;
 import arrodes.ui.Ui;
 
-public class MarkCommand extends Command{
+/** Marks a numbered task as completed. */
+public class MarkCommand extends Command {
     private final int taskNumber;
 
     public MarkCommand(int taskNumber) {

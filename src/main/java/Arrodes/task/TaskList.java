@@ -3,14 +3,16 @@ package arrodes.task;
 import arrodes.exception.ArrodesException;
 import java.util.ArrayList;
 
+/** Stores tasks while enforcing a maximum capacity. */
 public class TaskList {
     private final int capacity;
     private final ArrayList<Task> list = new ArrayList<>();
 
     public TaskList() {
-        //Default capacity 100
         this.capacity = 100;
     }
+
+    /** Creates a task list with the specified maximum capacity. */
     public TaskList(int capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Task list capacity cannot be negative.");
@@ -26,22 +28,28 @@ public class TaskList {
         return list.size() >= capacity;
     }
 
-    public void insert(Task task) throws ArrodesException{
+    public void insert(Task task) throws ArrodesException {
         if (task == null || task.getDescription() == null || task.getDescription().isBlank()) {
             throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
         }
-        if (isFull()) throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
+        if (isFull()) {
+            throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
+        }
         list.add(task);
     }
 
-    public void delete(int itemNumber) throws ArrodesException{
+    public void delete(int itemNumber) throws ArrodesException {
         int itemIndex = itemNumber - 1;
-        if ((itemIndex) >= list.size() || itemIndex < 0) throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        if (itemIndex >= list.size() || itemIndex < 0) {
+            throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        }
         list.remove(itemIndex);
     }
 
     public Task getTaskByIndex(int itemIndex) {
-        if ((itemIndex) >= list.size() || itemIndex < 0) throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        if (itemIndex >= list.size() || itemIndex < 0) {
+            throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
+        }
         return list.get(itemIndex);
     }
 
