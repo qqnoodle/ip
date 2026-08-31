@@ -12,7 +12,6 @@ import arrodes.ui.Ui;
 public class Arrodes {
     /** Maximum number of requests Arrodes can remember during one session. */
     private static final int MAX_ITEMS = 100;
-
     private Storage storage;
     private TaskList taskList;
     private final Ui ui;

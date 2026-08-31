@@ -1,21 +1,23 @@
 package arrodes.task;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 /** Tests deadline validation, accessors, formatting, and completion display. */
 class DeadlineTest {
 
     /** Rejects a deadline without a due date. */
-    /** Verifies constructor nullDueBy throwsIllegalArgumentException. */
     @Test
     void constructor_nullDueBy_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Deadline("submit report", null));
+        assertThrows(IllegalArgumentException.class, () -> new Deadline("submit report", null));
     }
 
     /** Returns the due date supplied to a valid deadline. */
-    /** Verifies getDueBy validDeadline returnsDueDate. */
     @Test
     void getDueBy_validDeadline_returnsDueDate() {
         LocalDateTime due = LocalDateTime.of(2025, 12, 31, 0, 0);
@@ -24,7 +26,6 @@ class DeadlineTest {
     }
 
     /** Formats a midnight deadline as a date without a time. */
-    /** Verifies toString midnightDeadline showsDateOnly. */
     @Test
     void toString_midnightDeadline_showsDateOnly() {
         // Midnight is treated as date-only and should not show HH:mm
@@ -37,7 +38,6 @@ class DeadlineTest {
     }
 
     /** Formats a non-midnight deadline with its time. */
-    /** Verifies toString nonMidnightDeadline showsDateTime. */
     @Test
     void toString_nonMidnightDeadline_showsDateTime() {
         LocalDateTime due = LocalDateTime.of(2025, 6, 15, 14, 30);
@@ -47,7 +47,6 @@ class DeadlineTest {
     }
 
     /** Displays the completed status icon for a finished deadline. */
-    /** Verifies toString completedDeadline showsXStatusIcon. */
     @Test
     void toString_completedDeadline_showsXStatusIcon() {
         LocalDateTime due = LocalDateTime.of(2025, 6, 15, 0, 0);

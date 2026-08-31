@@ -1,10 +1,11 @@
 package arrodes.command;
 
+import java.util.Locale;
+
 import arrodes.storage.Storage;
 import arrodes.task.Task;
 import arrodes.task.TaskList;
 import arrodes.ui.Ui;
-import java.util.Locale;
 
 /**
  * Searches the remembered tasks for descriptions containing a keyword.

@@ -1,17 +1,19 @@
 package arrodes.command;
 
-import arrodes.exception.ArrodesException;
-import arrodes.task.Deadline;
-import arrodes.task.TaskList;
-import arrodes.task.Todo;
-import arrodes.ui.Ui;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import arrodes.exception.ArrodesException;
+import arrodes.task.Deadline;
+import arrodes.task.TaskList;
+import arrodes.task.Todo;
+import arrodes.ui.Ui;
 
 /** Tests the task-description search performed by {@link FindCommand}. */
 class FindCommandTest {

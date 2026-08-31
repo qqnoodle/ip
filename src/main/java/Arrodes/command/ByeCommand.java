@@ -15,7 +15,8 @@ public class ByeCommand extends Command {
         return true;
     }
 
-    /** Displays the farewell message.
+    /**
+     * Displays the farewell message.
      * @param ui interface used for output
      * @param taskList unused task list
      * @param storage unused storage

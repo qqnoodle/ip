@@ -1,8 +1,9 @@
 package arrodes.task;
 
+import java.util.ArrayList;
+
 import arrodes.exception.ArrodesException;
 
-import java.util.ArrayList;
 
 /** Bounded, ordered collection of tasks remembered by Arrodes. */
 public class TaskList {
@@ -16,7 +17,8 @@ public class TaskList {
         this.capacity = 100;
     }
 
-    /** Creates an empty list with a chosen capacity.
+    /**
+     * Creates an empty list with a chosen capacity.
      * @param capacity maximum number of tasks
      * @throws IllegalArgumentException if capacity is negative
      */
@@ -27,21 +29,24 @@ public class TaskList {
         this.capacity = capacity;
     }
 
-    /** Returns the number of tasks currently stored.
+    /**
+     * Returns the number of tasks currently stored.
      * @return current task count
      */
     public int getSize() {
         return list.size();
     }
 
-    /** Returns whether no more tasks can be inserted.
+    /**
+     * Returns whether no more tasks can be inserted.
      * @return {@code true} when the list has reached capacity
      */
     public boolean isFull() {
         return list.size() >= capacity;
     }
 
-    /** Adds a valid task to the end of the list.
+    /**
+     * Adds a valid task to the end of the list.
      * @param task task to add
      * @throws ArrodesException if the task is invalid or the list is full
      */
@@ -55,7 +60,8 @@ public class TaskList {
         list.add(task);
     }
 
-    /** Removes a task using its one-based display number.
+    /**
+     * Removes a task using its one-based display number.
      * @param itemNumber one-based task number
      * @throws ArrodesException if no task has that number
      */
@@ -67,7 +73,8 @@ public class TaskList {
         list.remove(itemIndex);
     }
 
-    /** Returns a task using its zero-based list index.
+    /**
+     * Returns a task using its zero-based list index.
      * @param itemIndex zero-based index
      * @return task at the requested index
      * @throws ArrodesException if the index is outside the list
@@ -79,7 +86,8 @@ public class TaskList {
         return list.get(itemIndex);
     }
 
-    /** Returns a task using its one-based display number.
+    /**
+     * Returns a task using its one-based display number.
      * @param itemNumber one-based task number
      * @return task at the requested number
      * @throws ArrodesException if the number is outside the list
