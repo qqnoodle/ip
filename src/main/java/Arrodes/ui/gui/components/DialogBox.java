@@ -14,7 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-
+/** Displays a message alongside a speaker's profile image. */
 public class DialogBox extends HBox {
     private static final Image IMAGE_OF_USER = new Image(DialogBox.class.getResourceAsStream("/images/user.jpg"));
     private static final Image IMAGE_OF_ARRODES = new Image(DialogBox.class.getResourceAsStream("/images/arrodes.jpg"));
@@ -24,6 +24,12 @@ public class DialogBox extends HBox {
     @FXML
     private ImageView displayPicture;
 
+    /**
+     * Creates a dialog box with the specified message and image.
+     *
+     * @param message message to display
+     * @param image image to display alongside the message
+     */
     public DialogBox(String message, Image image) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(DialogBox.class.getResource("/view/DialogBox.fxml"));
@@ -35,7 +41,6 @@ public class DialogBox extends HBox {
         }
         dialog.setText(message);
         displayPicture.setImage(image);
-
     }
 
     /**
@@ -48,10 +53,22 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_LEFT);
     }
 
+    /**
+     * Creates a dialog box for a user message.
+     *
+     * @param message message to display
+     * @return dialog box containing the user message
+     */
     public static DialogBox getUserDialogBox(String message) {
         return new DialogBox(message, IMAGE_OF_USER);
     }
 
+    /**
+     * Creates a dialog box for an Arrodes message.
+     *
+     * @param message message to display
+     * @return dialog box containing the Arrodes message
+     */
     public static DialogBox getArrodesDialogBox(String message) {
         DialogBox db = new DialogBox(message, IMAGE_OF_ARRODES);
         db.flip();

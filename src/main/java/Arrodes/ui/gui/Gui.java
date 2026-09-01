@@ -50,6 +50,11 @@ public class Gui extends AnchorPane implements Ui {
         }
         showOnLoadMessage();
     }
+    /**
+     * Registers the callback that receives input submitted through the GUI.
+     *
+     * @param inputListener callback invoked with the submitted user input
+     */
     public void attachInputListener(GuiListener inputListener) {
         this.inputListener = inputListener;
     }
@@ -76,7 +81,7 @@ public class Gui extends AnchorPane implements Ui {
         String userInput = textInput.getText();
         textInput.clear();
         return userInput;
-    };
+    }
     /**
      * Displays an arbitrary application message.
      * @param message text to print
@@ -84,7 +89,7 @@ public class Gui extends AnchorPane implements Ui {
     @Override
     public void showMessage(String message) {
         dialogContainer.getChildren().addAll(DialogBox.getArrodesDialogBox(message));
-    };
+    }
     /** Displays the startup banner and greeting. */
     @Override
     public void showOnLoadMessage() {
@@ -93,17 +98,17 @@ public class Gui extends AnchorPane implements Ui {
         showMessage("The Great Arrodes is before you!");
         showMessage("State your request!");
 
-    };
+    }
 
     /** Displays the standard separator line. */
     @Override
     public void showSeparator() {
         showMessage("....");
-    };
+    }
 
     /** Displays the application farewell. */
     @Override
     public void showOnExitMessage() {
         showMessage("I shall await your next request...");
-    };
+    }
 }
