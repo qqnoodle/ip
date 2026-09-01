@@ -62,12 +62,16 @@ public class Gui extends AnchorPane implements Ui {
     /** Performs setup after all {@code @FXML} fields have been injected. */
     @FXML
     public void initialize() {
+        //Add listener to listen for button click
         sendButton.setOnMouseClicked((event) -> {
             handleUserInput();
         });
+        //Add listener to listen for enter
         textInput.setOnAction((event) -> {
             handleUserInput();
         });
+        //Scroll down to the end everytime dialogContainer height changes
+        dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
     }
 
     private void handleUserInput() {
