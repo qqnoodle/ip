@@ -1,3 +1,5 @@
+package arrodes.storage;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -14,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import arrodes.exception.ArrodesException;
-import arrodes.storage.Storage;
 import arrodes.task.Deadline;
 import arrodes.task.Event;
 import arrodes.task.TaskList;
