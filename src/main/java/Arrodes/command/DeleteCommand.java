@@ -28,8 +28,9 @@ public class DeleteCommand extends Command {
         Task task = taskList.getTaskByNumber(taskNumber);
         taskList.delete(taskNumber);
         storage.save(taskList);
-        ui.showMessage("Erasing records of the task:\n");
-        ui.showMessage(task + "\n");
-        ui.showMessage(taskList.getSize() + " tasks remaining are being tracked");
+        ui.showMessage("Erasing records of the task:\n"
+                + task + "\n"
+                + taskList.getSize()
+                + " tasks remaining are being tracked");
     }
 }

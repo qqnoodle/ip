@@ -83,7 +83,6 @@ public class Arrodes extends Application {
             Command command = CommandParser.parse(userInput);
             command.execute(gui, taskList, storage);
             if (command.isExit()) {
-                gui.showOnExitMessage();
                 Platform.exit();
             }
         } catch (ArrodesException knownArrodesException) {

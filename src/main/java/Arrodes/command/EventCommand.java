@@ -52,7 +52,7 @@ public class EventCommand extends Command {
         }
         taskList.insert(new Event(description, from, to, startIncludesTime, endIncludesTime));
         storage.save(taskList);
-        System.out.println("Inscribing request: \n"
+        ui.showMessage("Inscribing request: \n"
                 + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
                 + taskList.getSize() + " tasks are being tracked");
     }
