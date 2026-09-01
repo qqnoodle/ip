@@ -11,7 +11,8 @@ public class TokenizedCommand {
     /** Slash-prefixed command parameters. */
     private final Map<String, String> parameters;
 
-    /** Creates a tokenized command.
+    /**
+     * Creates a tokenized command.
      * @param command command keyword
      * @param description free-text description
      * @param parameters parsed parameter mappings
@@ -22,33 +23,38 @@ public class TokenizedCommand {
         this.parameters = parameters;
     }
 
-    /** Returns the command keyword.
+    /**
+     * Returns the command keyword.
      * @return command keyword
      */
     public String getCommand() {
         return command;
     }
 
-    /** Returns the command description.
+    /**
+     * Returns the command description.
      * @return description text
      */
     public String getDescription() {
         return description;
     }
-    /** Returns whether a non-blank description was supplied.
+    /**
+     * Returns whether a non-blank description was supplied.
      * @return {@code true} when a description is present
      */
     public boolean hasDescription() {
         return !description.isBlank() | !description.isEmpty();
     }
-    /** Returns the parsed parameter mappings.
+    /**
+     * Returns the parsed parameter mappings.
      * @return command parameters
      */
     public Map<String, String> getParameters() {
         return parameters;
     }
 
-    /** Returns whether at least one parameter was supplied.
+    /**
+     * Returns whether at least one parameter was supplied.
      * @return {@code true} when parameters are present
      */
     public boolean hasParameters() {

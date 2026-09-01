@@ -1,5 +1,17 @@
 package arrodes.storage;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import arrodes.exception.ArrodesException;
 import arrodes.task.Deadline;
 import arrodes.task.Event;
@@ -7,17 +19,6 @@ import arrodes.task.Task;
 import arrodes.task.TaskList;
 import arrodes.task.Todo;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.AtomicMoveNotSupportedException;
-import java.util.ArrayList;
-import java.util.List;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 /**
  * Saves Arrodes tasks to a plain-text file.
@@ -138,31 +139,31 @@ public class Storage {
 
         Task task;
         switch (fields.get(0)) {
-        case "T":
-            if (fields.size() != 3) {
+            case "T":
+                if (fields.size() != 3) {
+                    throw invalidRecord();
+                }
+                task = new Todo(fields.get(2));
+                break;
+            case "D":
+                if (fields.size() != 4 || fields.get(3).isBlank()) {
+                    throw invalidRecord();
+                }
+                task = new Deadline(fields.get(2), parseDateTime(fields.get(3)));
+                break;
+            case "E":
+                if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) {
+                    throw invalidRecord();
+                }
+                try {
+                    task = new Event(fields.get(2), parseDateTime(fields.get(3)), parseDateTime(fields.get(4)),
+                            fields.get(3).contains("T"), fields.get(4).contains("T"));
+                } catch (IllegalArgumentException exception) {
+                    throw invalidRecord();
+                }
+                break;
+            default:
                 throw invalidRecord();
-            }
-            task = new Todo(fields.get(2));
-            break;
-        case "D":
-            if (fields.size() != 4 || fields.get(3).isBlank()) {
-                throw invalidRecord();
-            }
-            task = new Deadline(fields.get(2), parseDateTime(fields.get(3)));
-            break;
-        case "E":
-            if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) {
-                throw invalidRecord();
-            }
-            try {
-                task = new Event(fields.get(2), parseDateTime(fields.get(3)), parseDateTime(fields.get(4)),
-                        fields.get(3).contains("T"), fields.get(4).contains("T"));
-            } catch (IllegalArgumentException exception) {
-                throw invalidRecord();
-            }
-            break;
-        default:
-            throw invalidRecord();
         }
 
         if ("1".equals(fields.get(1))) {

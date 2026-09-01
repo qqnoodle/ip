@@ -57,7 +57,8 @@ public class Task {
         isDone = false;
     }
 
-    /** Returns the task status and description in display form.
+    /**
+     * Returns the task status and description in display form.
      * @return formatted task text
      */
     @Override

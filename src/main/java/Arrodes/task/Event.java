@@ -16,7 +16,8 @@ public class Event extends Task {
     /** Whether the input explicitly included a time for the end endpoint. */
     private final boolean endIncludesTime;
 
-    /** Creates a timed event whose endpoints are displayed with times.
+    /**
+     * Creates a timed event whose endpoints are displayed with times.
      * @param description text describing the event
      * @param startAt event start
      * @param endAt event end
@@ -26,7 +27,8 @@ public class Event extends Task {
         this(description, startAt, endAt, true, true);
     }
 
-    /** Creates an event while preserving whether either input endpoint included a time.
+    /**
+     * Creates an event while preserving whether either input endpoint included a time.
      * @param description text describing the event
      * @param startAt event start
      * @param endAt event end
@@ -64,7 +66,8 @@ public class Event extends Task {
         return endAt;
     }
 
-    /** Returns the event with a type prefix and formatted endpoints.
+    /**
+     * Returns the event with a type prefix and formatted endpoints.
      * @return formatted event text
      */
     @Override
@@ -73,7 +76,8 @@ public class Event extends Task {
                 formatEndpoint(startAt, startIncludesTime), formatEndpoint(endAt, endIncludesTime));
     }
 
-    /** Formats an endpoint according to whether its input included a time.
+    /**
+     * Formats an endpoint according to whether its input included a time.
      * @param endpoint endpoint to format
      * @param includesTime whether to include hours and minutes
      * @return formatted endpoint

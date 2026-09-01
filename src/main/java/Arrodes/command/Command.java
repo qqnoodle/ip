@@ -9,13 +9,15 @@ public abstract class Command {
     public Command() {
     }
 
-    /** Returns whether executing this command should terminate Arrodes.
+    /**
+     * Returns whether executing this command should terminate Arrodes.
      * @return {@code true} only for commands that exit the application
      */
     public boolean isExit() {
         return false;
     }
-    /** Applies this command to the current task list and persistence layer.
+    /**
+     *  Applies this command to the current task list and persistence layer.
      * @param ui interface used for user-facing output
      * @param taskList current tasks
      * @param storage persistence layer for saving changes

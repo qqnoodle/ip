@@ -10,7 +10,8 @@ public class Deadline extends Task {
     /** Date by which this task should be completed. */
     private final LocalDateTime dueBy;
 
-    /** Creates a deadline with a date and optional time.
+    /**
+     * Creates a deadline with a date and optional time.
      * @param description text describing the task
      * @param dueBy date and optional time by which the task is due
      * @throws IllegalArgumentException if {@code dueBy} is null
@@ -32,7 +33,8 @@ public class Deadline extends Task {
         return dueBy;
     }
 
-    /** Returns the task with a deadline prefix and formatted due date.
+    /**
+     * Returns the task with a deadline prefix and formatted due date.
      * @return formatted deadline text
      */
     @Override
@@ -40,7 +42,8 @@ public class Deadline extends Task {
         return String.format("[D]%s (by: %s)", super.toString(), formatDueBy());
     }
 
-    /** Formats midnight as a date and other deadlines as date-times.
+    /**
+     * Formats midnight as a date and other deadlines as date-times.
      * @return formatted due date
      */
     private String formatDueBy() {

@@ -9,14 +9,16 @@ public class DeleteCommand extends Command {
     /** One-based number of the task to remove. */
     private final int taskNumber;
 
-    /** Creates a command for deleting a task.
+    /**
+     * Creates a command for deleting a task.
      * @param taskNumber one-based task number
      */
     public DeleteCommand(int taskNumber) {
         this.taskNumber = taskNumber;
     }
 
-    /** Deletes the task, persists the list, and reports the removed task.
+    /**
+     * Deletes the task, persists the list, and reports the removed task.
      * @param ui interface used for output
      * @param taskList list to update
      * @param storage persistence layer

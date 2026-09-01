@@ -31,14 +31,16 @@ public class Ui {
     public Ui() {
     }
 
-    /** Reads one complete command line.
+    /**
+     * Reads one complete command line.
      * @return next line entered by the user
      */
     public String readUserCommand() {
         return scanner.nextLine();
     }
 
-    /** Prints an arbitrary application message.
+    /**
+     * Prints an arbitrary application message.
      * @param message text to print
      */
     public void showMessage(String message) {

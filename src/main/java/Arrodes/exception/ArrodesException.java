@@ -9,14 +9,16 @@ public class ArrodesException extends RuntimeException {
     /** Message used when a task description is absent. */
     public static final String EMPTY_DESCRIPTION = "Arrodes requires more information of the nature of the task";
     /** Message used when required parameters are absent. */
-    public static final String INCORRECT_PARAMS_COUNT = "Arrodes requires more magic words (parameters) for the request!!";
+    public static final String INCORRECT_PARAMS_COUNT = "Arrodes requires more magic words"
+            + "(parameters) for the request!!";
     /** Message used when parameters have an invalid shape. */
     public static final String INCORRECT_PARAMS = "Your ritualistic magic parameters is incorrect!!!";
     /** Message used when an event ends before it starts. */
     public static final String INVALID_EVENT_TIME = "Event end time must not be earlier than its start time.";
 
     /** Message used when the task list has reached capacity. */
-    public static final String TASK_LIST_FULL = "Records of Arrodes reached its limit and can no longer accept more request!!!";
+    public static final String TASK_LIST_FULL = "Records of Arrodes reached its limit and"
+            + "can no longer accept more request!!!";
     /** Message used when a requested task number is invalid. */
     public static final String ITEM_NOT_IN_LIST = "That task does not appear in Arrodes' annals.";
 

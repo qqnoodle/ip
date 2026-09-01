@@ -1,16 +1,17 @@
 package arrodes.command;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import arrodes.storage.Storage;
 import arrodes.task.Deadline;
 import arrodes.task.Event;
 import arrodes.task.Task;
 import arrodes.task.TaskList;
 import arrodes.ui.Ui;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /** Command that displays deadlines and events relevant to a date or time. */
 public class UpcomingCommand extends Command {
@@ -18,7 +19,8 @@ public class UpcomingCommand extends Command {
     private final LocalDateTime on;
     /** Whether the query explicitly included a time. */
     private final boolean includesTime;
-    /** Creates an upcoming-task query.
+    /**
+     * Creates an upcoming-task query.
      * @param on target date or date-time
      * @param includesTime whether the query includes a time
      */
@@ -27,7 +29,8 @@ public class UpcomingCommand extends Command {
         this.includesTime = includesTime;
     }
 
-    /** Displays matching deadlines and events.
+    /**
+     * Displays matching deadlines and events.
      * @param ui interface used for output
      * @param taskList list to search
      * @param storage unused storage

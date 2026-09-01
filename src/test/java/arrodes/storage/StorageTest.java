@@ -1,18 +1,26 @@
-import arrodes.storage.Storage;
-import arrodes.task.*;
-import arrodes.exception.ArrodesException;
+package arrodes.storage;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import static org.junit.jupiter.api.Assertions.*;
+
+import arrodes.exception.ArrodesException;
+import arrodes.task.Deadline;
+import arrodes.task.Event;
+import arrodes.task.TaskList;
+import arrodes.task.Todo;
+
 
 /**
  * Verifies the plain-text snapshots produced by {@link Storage}.
@@ -20,14 +28,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>This is a dependency-free test executable because the project does not
  * currently define a unit-test framework.</p>
  */
-/** Tests persistence, parsing, escaping, and storage failure handling. */
 class StorageTest {
 
     @TempDir
     Path temporaryDirectory;
 
     /** Verifies todo, deadline, event, and completed-task serialization. */
-    /** Verifies savesAllTaskTypesAndStatuses. */
     @Test
     void savesAllTaskTypesAndStatuses() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
@@ -62,7 +68,6 @@ class StorageTest {
     }
 
     /** Verifies that saving an empty list removes tasks from the old snapshot. */
-    /** Verifies saveReplacesPreviousSnapshot. */
     @Test
     void saveReplacesPreviousSnapshot() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
@@ -80,7 +85,6 @@ class StorageTest {
     }
 
     /** Verifies that saved records are reconstructed as the correct task types. */
-    /** Verifies loadsAllTaskTypesAndStatuses. */
     @Test
     void loadsAllTaskTypesAndStatuses() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
@@ -104,7 +108,6 @@ class StorageTest {
     }
 
     /** Verifies that a missing file is treated as an empty first run. */
-    /** Verifies missingFileLoadsEmptyList. */
     @Test
     void missingFileLoadsEmptyList() {
         Path dataFile = temporaryDirectory.resolve("missing.txt");
@@ -115,39 +118,33 @@ class StorageTest {
     }
 
     /** Verifies that malformed records are not silently accepted. */
-    /** Verifies malformedRecordIsRejected. */
     @Test
     void malformedRecordIsRejected() throws IOException {
         Path dataFile = temporaryDirectory.resolve("invalid.txt");
 
         Files.writeString(dataFile, "X | 0 | unknown task");
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).load(100)
+                ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
         Files.writeString(dataFile, "T | 2 | invalid status");
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).load(100)
+                ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
         Files.writeString(dataFile, "T | 0 | unfinished\\");
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).load(100)
+                ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
         Files.writeString(dataFile, "D | 0 | missing due date");
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).load(100)
+                ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
         Files.writeString(dataFile, "D | 0 | impossible date | 2026-02-31");
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).load(100)
+                ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
         Files.writeString(
@@ -155,13 +152,11 @@ class StorageTest {
                 "E | 0 | reversed event | 2026-09-05T10:00 | 2026-09-05T09:00"
         );
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).load(100)
+                ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
     }
 
     /** Verifies that descriptions and time fields may contain storage delimiters. */
-    /** Verifies escapedFieldsRoundTrip. */
     @Test
     void escapedFieldsRoundTrip() throws IOException {
         Path dataFile = temporaryDirectory.resolve("escaped.txt");
@@ -184,13 +179,11 @@ class StorageTest {
         );
 
         assertEquals(
-                LocalDateTime.of(2026, 8, 7, 0, 0),
-                ((Deadline) loaded.getTaskByIndex(1)).getDueBy()
+                LocalDateTime.of(2026, 8, 7, 0, 0), ((Deadline) loaded.getTaskByIndex(1)).getDueBy()
         );
     }
 
     /** Verifies that date and time fields are exposed as java.time values. */
-    /** Verifies dateAndTimeValuesAreTyped. */
     @Test
     void dateAndTimeValuesAreTyped() throws IOException {
         Path dataFile = temporaryDirectory.resolve("typed.txt");
@@ -214,13 +207,11 @@ class StorageTest {
         TaskList loaded = storage.load(10);
 
         assertEquals(
-                LocalDateTime.of(2026, 9, 1, 0, 0),
-                ((Deadline) loaded.getTaskByIndex(0)).getDueBy()
+                LocalDateTime.of(2026, 9, 1, 0, 0), ((Deadline) loaded.getTaskByIndex(0)).getDueBy()
         );
 
         assertEquals(
-                LocalDateTime.of(2026, 9, 2, 9, 30),
-                ((Event) loaded.getTaskByIndex(1)).getStartAt()
+                LocalDateTime.of(2026, 9, 2, 9, 30), ((Event) loaded.getTaskByIndex(1)).getStartAt()
         );
 
         Files.write(dataFile, List.of(
@@ -231,18 +222,15 @@ class StorageTest {
         TaskList mixedFormats = storage.load(10);
 
         assertEquals(
-                LocalDateTime.of(2026, 9, 3, 17, 30),
-                ((Deadline) mixedFormats.getTaskByIndex(0)).getDueBy()
+                LocalDateTime.of(2026, 9, 3, 17, 30), ((Deadline) mixedFormats.getTaskByIndex(0)).getDueBy()
         );
 
         assertEquals(
-                LocalDateTime.of(2026, 9, 4, 0, 0),
-                ((Event) mixedFormats.getTaskByIndex(1)).getStartAt()
+                LocalDateTime.of(2026, 9, 4, 0, 0), ((Event) mixedFormats.getTaskByIndex(1)).getStartAt()
         );
     }
 
     /** Verifies that a file with more records than the configured limit is rejected. */
-    /** Verifies capacityOverflowIsRejected. */
     @Test
     void capacityOverflowIsRejected() throws IOException {
         Path dataFile = temporaryDirectory.resolve("full.txt");
@@ -253,13 +241,11 @@ class StorageTest {
         ));
 
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).load(1)
+                ArrodesException.class, () -> new Storage(dataFile).load(1)
         );
     }
 
     /** Verifies that a failed save cannot replace a directory with a file. */
-    /** Verifies saveFailureDoesNotReplaceDirectory. */
     @Test
     void saveFailureDoesNotReplaceDirectory() throws IOException {
         Path dataFile = temporaryDirectory.resolve("directory-target");
@@ -267,8 +253,7 @@ class StorageTest {
         Files.createDirectory(dataFile);
 
         assertThrows(
-                ArrodesException.class,
-                () -> new Storage(dataFile).save(new TaskList())
+                ArrodesException.class, () -> new Storage(dataFile).save(new TaskList())
         );
 
         assertTrue(Files.isDirectory(dataFile));
