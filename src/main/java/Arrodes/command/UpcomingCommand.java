@@ -43,7 +43,7 @@ public class UpcomingCommand extends Command {
         DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern(
                 dateOnly ? "MMM dd yyyy" : "MMM dd yyyy HH:mm", Locale.ENGLISH);
         LocalDateTime deadlineCutoff = dateOnly ? dayEnd : on;
-        boolean found = false;
+        boolean isFound = false;
 
         ui.showMessage("Arrodes recalls requests for " + on.format(displayFormat) + ":");
         for (int i = 0; i < taskList.getSize(); i++) {
@@ -59,10 +59,10 @@ public class UpcomingCommand extends Command {
             }
             if (matches) {
                 ui.showMessage((i + 1) + "." + task);
-                found = true;
+                isFound = true;
             }
         }
-        if (!found) {
+        if (!isFound) {
             ui.showMessage("Arrodes found no deadlines or events for that date or time.");
         }
     }
