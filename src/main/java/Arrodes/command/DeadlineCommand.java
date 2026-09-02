@@ -35,7 +35,7 @@ public class DeadlineCommand extends Command {
     public void execute(Ui ui, TaskList taskList, Storage storage) {
         taskList.insert(new Deadline(description, dueBy));
         storage.save(taskList);
-        System.out.println("Inscribing request: \n"
+        ui.showMessage("Inscribing request: \n"
                 + "   " + taskList.getTaskByNumber(taskList.getSize()).toString() + "\n"
                 + taskList.getSize() + " tasks are being tracked");
     }

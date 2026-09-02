@@ -45,8 +45,9 @@ public class Storage {
      * application's real data file.</p>
      *
      * @param dataFile file to write
+     * @throws IllegalArgumentException if data file name is empty
      */
-    public Storage(Path dataFile) {
+    public Storage(Path dataFile) throws IllegalArgumentException {
         if (dataFile == null || dataFile.getFileName() == null) {
             throw new IllegalArgumentException("Storage file path must name a file.");
         }

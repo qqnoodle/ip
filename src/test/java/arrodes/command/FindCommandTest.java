@@ -13,6 +13,7 @@ import arrodes.task.Deadline;
 import arrodes.task.TaskList;
 import arrodes.task.Todo;
 import arrodes.ui.Ui;
+import arrodes.ui.cli.Cli;
 
 /** Tests the task-description search performed by {@link FindCommand}. */
 class FindCommandTest {
@@ -64,7 +65,7 @@ class FindCommandTest {
     }
 
     /** UI implementation that captures messages for exact output assertions. */
-    private static class CapturingUi extends Ui {
+    private static class CapturingUi extends Cli {
         /** Stream receiving each message shown by the command. */
         private final PrintStream output;
 
