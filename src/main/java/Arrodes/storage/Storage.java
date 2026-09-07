@@ -208,17 +208,17 @@ public class Storage {
     private List<String> splitFields(String line) throws ArrodesException {
         List<String> fields = new ArrayList<>();
         StringBuilder field = new StringBuilder();
-        boolean escaping = false;
+        boolean isEscaping = false;
         for (int i = 0; i < line.length(); i++) {
             char current = line.charAt(i);
-            if (escaping) {
+            if (isEscaping) {
                 if (current != '\\' && current != '|') {
                     field.append('\\');
                 }
                 field.append(current);
-                escaping = false;
+                isEscaping = false;
             } else if (current == '\\') {
-                escaping = true;
+                isEscaping = true;
             } else if (current == '|') {
                 fields.add(field.toString().strip());
                 field.setLength(0);
@@ -226,7 +226,7 @@ public class Storage {
                 field.append(current);
             }
         }
-        if (escaping) {
+        if (isEscaping) {
             throw invalidRecord();
         }
         fields.add(field.toString().strip());
@@ -254,7 +254,7 @@ public class Storage {
     /** Converts one task into the storage format. */
     private String formatTask(Task task) {
         if (task == null || task.getDescription() == null || task.getDescription().isBlank()
-                || containsLineBreak(task.getDescription())) {
+                || hasLineBreak(task.getDescription())) {
             throw new IllegalArgumentException("Task description cannot be null or span multiple lines.");
         }
         String status = task.isDone() ? COMPLETED_STATUS : INCOMPLETE_STATUS;
@@ -277,7 +277,7 @@ public class Storage {
 
     /** Escapes characters that have meaning in the storage format. */
     private String encode(String value) {
-        if (value == null || containsLineBreak(value)) {
+        if (value == null || hasLineBreak(value)) {
             throw new IllegalArgumentException("Storage fields cannot be null or span multiple lines.");
         }
         return value.replace("\\", "\\\\").replace("|", "\\|");
@@ -299,7 +299,7 @@ public class Storage {
     }
 
     /** Returns whether a value would corrupt the line-oriented format. */
-    private boolean containsLineBreak(String value) {
+    private boolean hasLineBreak(String value) {
         return value.indexOf('\n') >= 0 || value.indexOf('\r') >= 0;
     }
 }

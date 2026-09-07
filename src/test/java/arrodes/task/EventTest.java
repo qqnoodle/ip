@@ -62,7 +62,7 @@ class EventTest {
     /** Omits midnight times when endpoints were entered as dates only. */
     @Test
     void toString_dateOnlyEndpoints_omitsTime() {
-        // When includesTime flags are false, time should not appear in output
+        // When isTimeIncluded flags are false, time should not appear in output
         Event event = new Event("workshop",
                 LocalDateTime.of(2025, 9, 1, 0, 0),
                 LocalDateTime.of(2025, 9, 2, 0, 0),
