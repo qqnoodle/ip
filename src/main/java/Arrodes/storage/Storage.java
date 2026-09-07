@@ -29,6 +29,16 @@ import arrodes.task.Todo;
 public class Storage {
     /** Location of the task data relative to the project root. */
     private static final Path DEFAULT_DATA_FILE = Path.of("data", "arrodes.txt");
+    /** Record type used for todo tasks in the storage format. */
+    private static final String TODO_RECORD_TYPE = "T";
+    /** Record type used for deadline tasks in the storage format. */
+    private static final String DEADLINE_RECORD_TYPE = "D";
+    /** Record type used for event tasks in the storage format. */
+    private static final String EVENT_RECORD_TYPE = "E";
+    /** Status value used for completed tasks in the storage format. */
+    private static final String COMPLETED_STATUS = "1";
+    /** Status value used for incomplete tasks in the storage format. */
+    private static final String INCOMPLETE_STATUS = "0";
 
     /** File used by this storage instance. */
     private final Path dataFile;
@@ -64,6 +74,11 @@ public class Storage {
         if (taskList == null) {
             throw new ArrodesException("Arrodes could not save your requests.");
         }
+        writeSnapshot(formatTasks(taskList));
+    }
+
+    /** Converts every task in a list into its storage representation. */
+    private List<String> formatTasks(TaskList taskList) throws ArrodesException {
         List<String> lines = new ArrayList<>();
         for (int i = 0; i < taskList.getSize(); i++) {
             try {
@@ -72,7 +87,11 @@ public class Storage {
                 throw new ArrodesException("Arrodes could not save your requests.");
             }
         }
+        return lines;
+    }
 
+    /** Writes a complete task snapshot using an atomic replacement when supported. */
+    private void writeSnapshot(List<String> lines) throws ArrodesException {
         Path temporaryFile = null;
         try {
             Path targetFile = dataFile.toAbsolutePath().normalize();
@@ -115,20 +134,30 @@ public class Storage {
             if (!Files.exists(dataFile)) {
                 return taskList;
             }
-            if (!Files.isRegularFile(dataFile)) {
-                throw new IOException("Storage path is not a regular file.");
-            }
-            for (String line : Files.readAllLines(dataFile, StandardCharsets.UTF_8)) {
-                if (!line.isBlank()) {
-                    taskList.insert(parseTask(line));
-                }
-            }
+            loadTasks(taskList);
         } catch (IOException | SecurityException exception) {
             throw new ArrodesException("Arrodes could not load your requests.");
         } catch (ArrodesException exception) {
             throw new ArrodesException("Arrodes could not load your requests.");
         }
         return taskList;
+    }
+
+    /** Reads the saved records and adds them to the supplied task list. */
+    private void loadTasks(TaskList taskList) throws IOException, ArrodesException {
+        if (!Files.isRegularFile(dataFile)) {
+            throw new IOException("Storage path is not a regular file.");
+        }
+        for (String line : Files.readAllLines(dataFile, StandardCharsets.UTF_8)) {
+            addRecordIfPresent(taskList, line);
+        }
+    }
+
+    /** Parses and adds a non-blank storage record. */
+    private void addRecordIfPresent(TaskList taskList, String line) throws ArrodesException {
+        if (!line.isBlank()) {
+            taskList.insert(parseTask(line));
+        }
     }
 
     /** Parses one saved line and restores its completion status. */
@@ -140,19 +169,19 @@ public class Storage {
 
         Task task;
         switch (fields.get(0)) {
-            case "T":
+            case TODO_RECORD_TYPE:
                 if (fields.size() != 3) {
                     throw invalidRecord();
                 }
                 task = new Todo(fields.get(2));
                 break;
-            case "D":
+            case DEADLINE_RECORD_TYPE:
                 if (fields.size() != 4 || fields.get(3).isBlank()) {
                     throw invalidRecord();
                 }
                 task = new Deadline(fields.get(2), parseDateTime(fields.get(3)));
                 break;
-            case "E":
+            case EVENT_RECORD_TYPE:
                 if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) {
                     throw invalidRecord();
                 }
@@ -167,9 +196,9 @@ public class Storage {
                 throw invalidRecord();
         }
 
-        if ("1".equals(fields.get(1))) {
+        if (COMPLETED_STATUS.equals(fields.get(1))) {
             task.markAsDone();
-        } else if (!"0".equals(fields.get(1))) {
+        } else if (!INCOMPLETE_STATUS.equals(fields.get(1))) {
             throw invalidRecord();
         }
         return task;
@@ -228,20 +257,22 @@ public class Storage {
                 || containsLineBreak(task.getDescription())) {
             throw new IllegalArgumentException("Task description cannot be null or span multiple lines.");
         }
-        String status = task.isDone() ? "1" : "0";
+        String status = task.isDone() ? COMPLETED_STATUS : INCOMPLETE_STATUS;
         if (task instanceof Deadline deadline) {
-            return String.format("D | %s | %s | %s", status, encode(deadline.getDescription()),
+            return String.format("%s | %s | %s | %s", DEADLINE_RECORD_TYPE, status,
+                    encode(deadline.getDescription()),
                     encodeRequired(formatDateTime(deadline.getDueBy())));
         }
         if (task instanceof Event event) {
-            return String.format("E | %s | %s | %s | %s", status, encode(event.getDescription()),
+            return String.format("%s | %s | %s | %s | %s", EVENT_RECORD_TYPE, status,
+                    encode(event.getDescription()),
                     encodeRequired(formatDateTime(event.getStartAt())),
                     encodeRequired(formatDateTime(event.getEndAt())));
         }
         if (!(task instanceof Todo)) {
             throw new IllegalArgumentException("Unknown task type.");
         }
-        return String.format("T | %s | %s", status, encode(task.getDescription()));
+        return String.format("%s | %s | %s", TODO_RECORD_TYPE, status, encode(task.getDescription()));
     }
 
     /** Escapes characters that have meaning in the storage format. */
