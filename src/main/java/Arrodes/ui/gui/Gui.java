@@ -77,6 +77,7 @@ public class Gui extends AnchorPane implements Ui {
     private void handleUserInput() {
         String userInput = readUserInput();
         dialogContainer.getChildren().addAll(DialogBox.getUserDialogBox(userInput));
+        assert inputListener != null : "GUI input listener must be attached before input is handled.";
         inputListener.execute(userInput);
     }
 
