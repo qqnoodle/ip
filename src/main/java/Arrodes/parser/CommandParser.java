@@ -189,6 +189,7 @@ public class CommandParser {
             default:
                 throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
         }
+        assert command != null : "A successfully parsed input must produce a command.";
         return command;
     }
 
