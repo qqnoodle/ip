@@ -65,131 +65,118 @@ public class CommandParser {
      * @throws ArrodesException if the command or its arguments are invalid
      */
     public static Command parse(String userInput) {
-        TokenizedCommand tokenizeCommand = tokenize(userInput);
+        TokenizedCommand tokenizedCommand = tokenize(userInput);
+        return createCommand(tokenizedCommand);
+    }
 
-        Map<String, String> parameters = tokenizeCommand.getParameters();
-        Command command;
-        switch (tokenizeCommand.getCommand()) {
-            case "bye":
-                if (tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                command = new ByeCommand();
-                break;
-            case "mark":
-                if (!tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                }
-                if (tokenizeCommand.hasParameters()) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                try {
-                    command = new MarkCommand(Integer.parseInt(tokenizeCommand.getDescription()));
-                } catch (NumberFormatException e) {
-                    throw new ArrodesException(ArrodesException.NOT_A_NUMBER);
-                }
-                break;
-            case "unmark":
-                if (!tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                }
-                if (tokenizeCommand.hasParameters()) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                try {
-                    command = new UnmarkCommand(Integer.parseInt(tokenizeCommand.getDescription()));
-                } catch (NumberFormatException e) {
-                    throw new ArrodesException(ArrodesException.NOT_A_NUMBER);
-                }
-                break;
-            case "delete":
-                if (!tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                }
-                if (tokenizeCommand.hasParameters()) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                try {
-                    command = new DeleteCommand(Integer.parseInt(tokenizeCommand.getDescription()));
-                } catch (NumberFormatException e) {
-                    throw new ArrodesException(ArrodesException.NOT_A_NUMBER);
-                }
-                break;
-            case "todo":
-                if (!tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                }
-                if (tokenizeCommand.hasParameters()) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                command = new TodoCommand(tokenizeCommand.getDescription());
-                break;
-            case "deadline":
-                if (!tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                }
-                if (!parameters.containsKey("by")) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                command = new DeadlineCommand(tokenizeCommand.getDescription(),
-                        parseDateTime(parameters.get("by")));
-                break;
-            case "event":
-                if (!tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                }
-                if (!parameters.containsKey("from")) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                if (!parameters.containsKey("to")) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                String from = parameters.get("from");
-                String to = parameters.get("to");
+    /** Creates a command from its tokenized representation. */
+    private static Command createCommand(TokenizedCommand tokenizedCommand) {
+        return switch (tokenizedCommand.getCommand()) {
+            case "bye" -> parseBye(tokenizedCommand);
+            case "mark" -> new MarkCommand(parseTaskNumber(tokenizedCommand));
+            case "unmark" -> new UnmarkCommand(parseTaskNumber(tokenizedCommand));
+            case "delete" -> new DeleteCommand(parseTaskNumber(tokenizedCommand));
+            case "todo" -> parseTodo(tokenizedCommand);
+            case "deadline" -> parseDeadline(tokenizedCommand);
+            case "event" -> parseEvent(tokenizedCommand);
+            case "list" -> parseList(tokenizedCommand);
+            case "find" -> parseFind(tokenizedCommand);
+            case "upcoming" -> parseUpcoming(tokenizedCommand);
+            default -> throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
+        };
+    }
 
-                //Bitwise Xor, we only want both to be LocalDate or LocalDateTime
-                if (from.contains("T") ^ to.contains("T")) {
-                    throw new ArrodesException("Time provided should both be same format");
-                }
-                //Insert Code Between
-
-                command = new EventCommand(tokenizeCommand.getDescription(),
-                        parseDateTime(from),
-                        parseDateTime(to),
-                        from.contains("T"),
-                        to.contains("T"));
-                break;
-            case "list":
-                if (tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException("try list without other words");
-                }
-                if (tokenizeCommand.hasParameters()) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                command = new ListCommand();
-                break;
-            case "find":
-                if (!tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
-                }
-                if (tokenizeCommand.hasParameters()) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                command = new FindCommand(tokenizeCommand.getDescription());
-                break;
-            case "upcoming":
-                if (tokenizeCommand.hasDescription()) {
-                    throw new ArrodesException("Description is not needed");
-                }
-                if (!parameters.containsKey("on")) {
-                    throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
-                }
-                command = new UpcomingCommand(parseDateTime(parameters.get("on")), parameters.get("on").contains("T"));
-                break;
-            default:
-                throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
+    /** Creates an exit command after validating that it has no arguments. */
+    private static Command parseBye(TokenizedCommand tokenizedCommand) {
+        if (tokenizedCommand.hasDescription()) {
+            throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
         }
-        return command;
+        return new ByeCommand();
+    }
+
+    /** Parses a one-based task number shared by task-number commands. */
+    private static int parseTaskNumber(TokenizedCommand tokenizedCommand) {
+        validateDescriptionWithoutParameters(tokenizedCommand);
+        try {
+            return Integer.parseInt(tokenizedCommand.getDescription());
+        } catch (NumberFormatException exception) {
+            throw new ArrodesException(ArrodesException.NOT_A_NUMBER);
+        }
+    }
+
+    /** Creates a todo command after validating its description. */
+    private static Command parseTodo(TokenizedCommand tokenizedCommand) {
+        validateDescriptionWithoutParameters(tokenizedCommand);
+        return new TodoCommand(tokenizedCommand.getDescription());
+    }
+
+    /** Creates a deadline command from its {@code /by} parameter. */
+    private static Command parseDeadline(TokenizedCommand tokenizedCommand) {
+        validateDescription(tokenizedCommand);
+        String dueBy = requireParameter(tokenizedCommand, "by");
+        return new DeadlineCommand(tokenizedCommand.getDescription(), parseDateTime(dueBy));
+    }
+
+    /** Creates an event command from its {@code /from} and {@code /to} parameters. */
+    private static Command parseEvent(TokenizedCommand tokenizedCommand) {
+        validateDescription(tokenizedCommand);
+        String from = requireParameter(tokenizedCommand, "from");
+        String to = requireParameter(tokenizedCommand, "to");
+        if (from.contains("T") ^ to.contains("T")) {
+            throw new ArrodesException("Time provided should both be same format");
+        }
+        return new EventCommand(tokenizedCommand.getDescription(), parseDateTime(from), parseDateTime(to),
+                from.contains("T"), to.contains("T"));
+    }
+
+    /** Creates a list command after validating that it has no arguments. */
+    private static Command parseList(TokenizedCommand tokenizedCommand) {
+        if (tokenizedCommand.hasDescription()) {
+            throw new ArrodesException("try list without other words");
+        }
+        if (tokenizedCommand.hasParameters()) {
+            throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+        }
+        return new ListCommand();
+    }
+
+    /** Creates a find command after validating its description. */
+    private static Command parseFind(TokenizedCommand tokenizedCommand) {
+        validateDescriptionWithoutParameters(tokenizedCommand);
+        return new FindCommand(tokenizedCommand.getDescription());
+    }
+
+    /** Creates an upcoming command from its {@code /on} parameter. */
+    private static Command parseUpcoming(TokenizedCommand tokenizedCommand) {
+        if (tokenizedCommand.hasDescription()) {
+            throw new ArrodesException("Description is not needed");
+        }
+        String on = requireParameter(tokenizedCommand, "on");
+        return new UpcomingCommand(parseDateTime(on), on.contains("T"));
+    }
+
+    /** Validates that a command has a non-empty description. */
+    private static void validateDescription(TokenizedCommand tokenizedCommand) {
+        if (!tokenizedCommand.hasDescription()) {
+            throw new ArrodesException(ArrodesException.EMPTY_DESCRIPTION);
+        }
+    }
+
+    /** Validates that a command has a description and no parameters. */
+    private static void validateDescriptionWithoutParameters(TokenizedCommand tokenizedCommand) {
+        validateDescription(tokenizedCommand);
+        if (tokenizedCommand.hasParameters()) {
+            throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+        }
+    }
+
+    /** Returns a required command parameter. */
+    private static String requireParameter(TokenizedCommand tokenizedCommand, String parameterName) {
+        String parameter = tokenizedCommand.getParameters().get(parameterName);
+        if (parameter == null) {
+            throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+        }
+        return parameter;
     }
 
     /**

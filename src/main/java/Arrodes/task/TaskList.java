@@ -12,11 +12,6 @@ public class TaskList {
     /** Tasks in the order in which they were added. */
     private final ArrayList<Task> list = new ArrayList<>();
 
-    /** Creates an empty list with the default capacity of 100 tasks. */
-    public TaskList() {
-        this.capacity = 100;
-    }
-
     /**
      * Creates an empty list with a chosen capacity.
      * @param capacity maximum number of tasks
