@@ -21,7 +21,7 @@ class FindCommandTest {
     /** Verifies that matching tasks retain their original one-based numbers. */
     @Test
     void execute_matchingDescriptions_displaysMatchingTasksOnly() throws ArrodesException {
-        TaskList taskList = new TaskList();
+        TaskList taskList = new TaskList(100);
         taskList.insert(new Todo("read book"));
         taskList.insert(new Deadline("return book", LocalDateTime.of(2026, 6, 6, 0, 0)));
         taskList.insert(new Todo("wash dishes"));
@@ -38,7 +38,7 @@ class FindCommandTest {
     /** Verifies that matching ignores differences in letter case. */
     @Test
     void execute_keywordWithDifferentCase_findsDescription() throws ArrodesException {
-        TaskList taskList = new TaskList();
+        TaskList taskList = new TaskList(100);
         taskList.insert(new Todo("Read Book"));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -53,7 +53,7 @@ class FindCommandTest {
     void execute_emptyTaskList_displaysNoMatchMessage() {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        new FindCommand("book").execute(new CapturingUi(output), new TaskList(), null);
+        new FindCommand("book").execute(new CapturingUi(output), new TaskList(100), null);
 
         assertEquals("Here are the matching tasks in your list:\n"
                 + "Arrodes found no matching tasks.\n", normalise(output));
