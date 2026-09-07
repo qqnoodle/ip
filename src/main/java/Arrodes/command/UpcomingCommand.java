@@ -18,15 +18,15 @@ public class UpcomingCommand extends Command {
     /** Date or date-time against which tasks are matched. */
     private final LocalDateTime on;
     /** Whether the query explicitly included a time. */
-    private final boolean includesTime;
+    private final boolean isTimeIncluded;
     /**
      * Creates an upcoming-task query.
      * @param on target date or date-time
-     * @param includesTime whether the query includes a time
+     * @param isTimeIncluded whether the query includes a time
      */
-    public UpcomingCommand(LocalDateTime on, boolean includesTime) {
+    public UpcomingCommand(LocalDateTime on, boolean isTimeIncluded) {
         this.on = on;
-        this.includesTime = includesTime;
+        this.isTimeIncluded = isTimeIncluded;
     }
 
     /**
@@ -37,33 +37,51 @@ public class UpcomingCommand extends Command {
      */
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
-        boolean dateOnly = !includesTime;
+        boolean isDateOnlyQuery = !isTimeIncluded;
         LocalDate targetDate = on.toLocalDate();
         LocalDateTime dayEnd = targetDate.atTime(LocalTime.MAX);
         DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern(
-                dateOnly ? "MMM dd yyyy" : "MMM dd yyyy HH:mm", Locale.ENGLISH);
-        LocalDateTime deadlineCutoff = dateOnly ? dayEnd : on;
-        boolean isFound = false;
+                isDateOnlyQuery ? "MMM dd yyyy" : "MMM dd yyyy HH:mm", Locale.ENGLISH);
+        LocalDateTime deadlineCutoff = isDateOnlyQuery ? dayEnd : on;
+        boolean hasMatchingTask = false;
 
         ui.showMessage("Arrodes recalls requests for " + on.format(displayFormat) + ":");
         for (int i = 0; i < taskList.getSize(); i++) {
             Task task = taskList.getTaskByIndex(i);
-            boolean matches = false;
-            if (task instanceof Deadline deadline) {
-                matches = !deadline.getDueBy().isAfter(deadlineCutoff);
-            } else if (task instanceof Event event) {
-                matches = dateOnly
-                        ? !event.getStartAt().toLocalDate().isAfter(targetDate)
-                        && !event.getEndAt().toLocalDate().isBefore(targetDate)
-                        : !event.getStartAt().isAfter(on) && !event.getEndAt().isBefore(on);
-            }
-            if (matches) {
+            if (isTaskRelevantToQuery(task, targetDate, on, deadlineCutoff, isDateOnlyQuery)) {
                 ui.showMessage((i + 1) + "." + task);
-                isFound = true;
+                hasMatchingTask = true;
             }
         }
-        if (!isFound) {
+        if (!hasMatchingTask) {
             ui.showMessage("Arrodes found no deadlines or events for that date or time.");
         }
+    }
+
+    /** Returns whether a task should be included in the upcoming-task results. */
+    private boolean isTaskRelevantToQuery(Task task, LocalDate targetDate, LocalDateTime queryTime,
+                                          LocalDateTime deadlineCutoff, boolean isDateOnlyQuery) {
+        if (task instanceof Deadline deadline) {
+            return !deadline.getDueBy().isAfter(deadlineCutoff);
+        }
+
+        if (task instanceof Event event) {
+            return isDateOnlyQuery
+                    ? isEventOnDate(event, targetDate)
+                    : isEventAtTime(event, queryTime);
+        }
+
+        return false;
+    }
+
+    /** Returns whether an event overlaps the queried date. */
+    private boolean isEventOnDate(Event event, LocalDate targetDate) {
+        return !event.getStartAt().toLocalDate().isAfter(targetDate)
+                && !event.getEndAt().toLocalDate().isBefore(targetDate);
+    }
+
+    /** Returns whether an event contains the queried date and time. */
+    private boolean isEventAtTime(Event event, LocalDateTime queryTime) {
+        return !event.getStartAt().isAfter(queryTime) && !event.getEndAt().isBefore(queryTime);
     }
 }
