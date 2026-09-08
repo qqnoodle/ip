@@ -20,6 +20,7 @@ public class TagCommand extends Command {
      * @param tag tag to assign to the task
      */
     public TagCommand(int taskNumber, String tag) {
+        assert tag != null : "Task tag must not be null.";
         this.taskNumber = taskNumber;
         this.tag = tag;
     }
