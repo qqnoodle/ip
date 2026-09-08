@@ -39,6 +39,12 @@ public class Storage {
     private static final String COMPLETED_STATUS = "1";
     /** Status value used for incomplete tasks in the storage format. */
     private static final String INCOMPLETE_STATUS = "0";
+    /** Number of fields stored for a todo record, including its tag. */
+    private static final int TODO_FIELD_COUNT = 4;
+    /** Number of fields stored for a deadline record, including its tag. */
+    private static final int DEADLINE_FIELD_COUNT = 5;
+    /** Number of fields stored for an event record, including its tag. */
+    private static final int EVENT_FIELD_COUNT = 6;
 
     /** File used by this storage instance. */
     private final Path dataFile;
@@ -163,26 +169,37 @@ public class Storage {
     /** Parses one saved line and restores its completion status and tag. */
     private Task parseTask(String line) throws ArrodesException {
         List<String> fields = splitFields(line);
+        validateCommonFields(fields);
+        Task task = createTask(fields);
+        restoreTaskState(task, fields);
+        return task;
+    }
+
+    /** Validates the fields shared by every task record. */
+    private void validateCommonFields(List<String> fields) throws ArrodesException {
         if (fields.size() < 3 || fields.get(0).isBlank() || fields.get(2).isBlank()) {
             throw invalidRecord();
         }
+    }
 
+    /** Creates a task from a validated storage record. */
+    private Task createTask(List<String> fields) throws ArrodesException {
         Task task;
         switch (fields.get(0)) {
             case TODO_RECORD_TYPE:
-                if (fields.size() != 3 && fields.size() != 4) {
+                if (fields.size() != TODO_FIELD_COUNT) {
                     throw invalidRecord();
                 }
                 task = new Todo(fields.get(2));
                 break;
             case DEADLINE_RECORD_TYPE:
-                if ((fields.size() != 4 && fields.size() != 5) || fields.get(3).isBlank()) {
+                if (fields.size() != DEADLINE_FIELD_COUNT || fields.get(3).isBlank()) {
                     throw invalidRecord();
                 }
                 task = new Deadline(fields.get(2), parseDateTime(fields.get(3)));
                 break;
             case EVENT_RECORD_TYPE:
-                if ((fields.size() != 5 && fields.size() != 6)
+                if (fields.size() != EVENT_FIELD_COUNT
                         || fields.get(3).isBlank() || fields.get(4).isBlank()) {
                     throw invalidRecord();
                 }
@@ -196,19 +213,17 @@ public class Storage {
             default:
                 throw invalidRecord();
         }
+        return task;
+    }
 
+    /** Restores the completion status and tag from a storage record. */
+    private void restoreTaskState(Task task, List<String> fields) throws ArrodesException {
         if (COMPLETED_STATUS.equals(fields.get(1))) {
             task.markAsDone();
         } else if (!INCOMPLETE_STATUS.equals(fields.get(1))) {
             throw invalidRecord();
         }
-        if ((fields.get(0).equals(TODO_RECORD_TYPE) && fields.size() == 4)
-                || (fields.get(0).equals(DEADLINE_RECORD_TYPE) && fields.size() == 5)
-                || (fields.get(0).equals(EVENT_RECORD_TYPE) && fields.size() == 6)) {
-            task.tagWith(fields.get(fields.size() - 1));
-        }
-        assert task != null : "A valid storage record must produce a task.";
-        return task;
+        task.tagWith(fields.get(fields.size() - 1));
     }
 
     /** Splits on unescaped separators and decodes escaped field characters. */
@@ -260,11 +275,21 @@ public class Storage {
 
     /** Converts one task into the storage format. */
     private String formatTask(Task task) {
+        validateTask(task);
+        String status = task.isDone() ? COMPLETED_STATUS : INCOMPLETE_STATUS;
+        return formatTaskByType(task, status);
+    }
+
+    /** Validates the fields required to store a task. */
+    private void validateTask(Task task) {
         if (task == null || task.getDescription() == null || task.getDescription().isBlank()
                 || hasLineBreak(task.getDescription())) {
             throw new IllegalArgumentException("Task description cannot be null or span multiple lines.");
         }
-        String status = task.isDone() ? COMPLETED_STATUS : INCOMPLETE_STATUS;
+    }
+
+    /** Formats a task according to its concrete task type. */
+    private String formatTaskByType(Task task, String status) {
         if (task instanceof Deadline deadline) {
             return String.format("%s | %s | %s | %s | %s", DEADLINE_RECORD_TYPE, status,
                     encode(deadline.getDescription()),

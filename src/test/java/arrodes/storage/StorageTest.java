@@ -130,15 +130,13 @@ class StorageTest {
         assertEquals("work | urgent \\ today", storage.load(100).getTaskByIndex(0).getTag());
     }
 
-    /** Verifies that records written before tag persistence remain loadable. */
+    /** Verifies that records without the required tag field are rejected. */
     @Test
-    void loadsLegacyRecordsWithoutTags() throws IOException {
+    void rejectsRecordsWithoutTags() throws IOException {
         Path dataFile = temporaryDirectory.resolve("legacy.txt");
         Files.writeString(dataFile, "T | 0 | read book");
 
-        TaskList loaded = new Storage(dataFile).load(100);
-
-        assertEquals("", loaded.getTaskByIndex(0).getTag());
+        assertThrows(ArrodesException.class, () -> new Storage(dataFile).load(100));
     }
 
     /** Verifies that saving an empty list removes tasks from the old snapshot. */
@@ -164,9 +162,9 @@ class StorageTest {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
 
         Files.write(dataFile, List.of(
-                "T | 0 | read book",
-                "D | 1 | return book | 2026-06-06",
-                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00"
+                "T | 0 | read book | ",
+                "D | 1 | return book | 2026-06-06 | ",
+                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00 | "
         ));
 
         TaskList taskList = new Storage(dataFile).load(100);
@@ -201,7 +199,7 @@ class StorageTest {
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
-        Files.writeString(dataFile, "T | 2 | invalid status");
+        Files.writeString(dataFile, "T | 2 | invalid status | ");
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
@@ -211,19 +209,19 @@ class StorageTest {
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
-        Files.writeString(dataFile, "D | 0 | missing due date");
+        Files.writeString(dataFile, "D | 0 | missing due date | ");
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
-        Files.writeString(dataFile, "D | 0 | impossible date | 2026-02-31");
+        Files.writeString(dataFile, "D | 0 | impossible date | 2026-02-31 | ");
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
         Files.writeString(
                 dataFile,
-                "E | 0 | reversed event | 2026-09-05T10:00 | 2026-09-05T09:00"
+                "E | 0 | reversed event | 2026-09-05T10:00 | 2026-09-05T09:00 | "
         );
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
@@ -289,8 +287,8 @@ class StorageTest {
         );
 
         Files.write(dataFile, List.of(
-                "D | 0 | timed deadline | 2026-09-03T17:30",
-                "E | 0 | date-only event | 2026-09-04 | 2026-09-05"
+                "D | 0 | timed deadline | 2026-09-03T17:30 | ",
+                "E | 0 | date-only event | 2026-09-04 | 2026-09-05 | "
         ));
 
         TaskList mixedFormats = storage.load(10);
@@ -310,8 +308,8 @@ class StorageTest {
         Path dataFile = temporaryDirectory.resolve("full.txt");
 
         Files.write(dataFile, List.of(
-                "T | 0 | first",
-                "T | 0 | second"
+                "T | 0 | first | ",
+                "T | 0 | second | "
         ));
 
         assertThrows(
