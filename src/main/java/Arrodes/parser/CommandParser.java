@@ -71,6 +71,7 @@ public class CommandParser {
 
     /** Creates a command from its tokenized representation. */
     private static Command createCommand(TokenizedCommand tokenizedCommand) {
+        assert tokenizedCommand != null : "tokenization returned empty unexpectedly";
         return switch (tokenizedCommand.getCommand()) {
             case "bye" -> parseBye(tokenizedCommand);
             case "mark" -> new MarkCommand(parseTaskNumber(tokenizedCommand));

@@ -22,6 +22,7 @@ public class TaskList {
             throw new IllegalArgumentException("Task list capacity cannot be negative.");
         }
         this.capacity = capacity;
+        assert this.capacity >= 0 : "Task list capacity must be non-negative.";
     }
 
     /**
@@ -53,6 +54,7 @@ public class TaskList {
             throw new ArrodesException(ArrodesException.TASK_LIST_FULL);
         }
         list.add(task);
+        assert list.size() <= capacity : "Task list must not exceed its capacity.";
     }
 
     /**
@@ -78,7 +80,9 @@ public class TaskList {
         if (itemIndex >= list.size() || itemIndex < 0) {
             throw new ArrodesException(ArrodesException.ITEM_NOT_IN_LIST);
         }
-        return list.get(itemIndex);
+        Task task = list.get(itemIndex);
+        assert task != null : "A valid task index must contain a task.";
+        return task;
     }
 
     /**

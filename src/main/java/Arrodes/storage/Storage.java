@@ -201,6 +201,7 @@ public class Storage {
         } else if (!INCOMPLETE_STATUS.equals(fields.get(1))) {
             throw invalidRecord();
         }
+        assert task != null : "A valid storage record must produce a task.";
         return task;
     }
 
