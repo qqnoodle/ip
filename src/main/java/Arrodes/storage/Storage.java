@@ -23,8 +23,8 @@ import arrodes.task.Todo;
 /**
  * Saves Arrodes tasks to a plain-text file.
  *
- * <p>Each line stores the task type, completion status, description, and any
- * type-specific time information.</p>
+ * <p>Each line stores the task type, completion status, description, tag, and
+ * any type-specific time information.</p>
  */
 public class Storage {
     /** Location of the task data relative to the project root. */
@@ -160,7 +160,7 @@ public class Storage {
         }
     }
 
-    /** Parses one saved line and restores its completion status. */
+    /** Parses one saved line and restores its completion status and tag. */
     private Task parseTask(String line) throws ArrodesException {
         List<String> fields = splitFields(line);
         if (fields.size() < 3 || fields.get(0).isBlank() || fields.get(2).isBlank()) {
@@ -170,19 +170,20 @@ public class Storage {
         Task task;
         switch (fields.get(0)) {
             case TODO_RECORD_TYPE:
-                if (fields.size() != 3) {
+                if (fields.size() != 3 && fields.size() != 4) {
                     throw invalidRecord();
                 }
                 task = new Todo(fields.get(2));
                 break;
             case DEADLINE_RECORD_TYPE:
-                if (fields.size() != 4 || fields.get(3).isBlank()) {
+                if ((fields.size() != 4 && fields.size() != 5) || fields.get(3).isBlank()) {
                     throw invalidRecord();
                 }
                 task = new Deadline(fields.get(2), parseDateTime(fields.get(3)));
                 break;
             case EVENT_RECORD_TYPE:
-                if (fields.size() != 5 || fields.get(3).isBlank() || fields.get(4).isBlank()) {
+                if ((fields.size() != 5 && fields.size() != 6)
+                        || fields.get(3).isBlank() || fields.get(4).isBlank()) {
                     throw invalidRecord();
                 }
                 try {
@@ -200,6 +201,11 @@ public class Storage {
             task.markAsDone();
         } else if (!INCOMPLETE_STATUS.equals(fields.get(1))) {
             throw invalidRecord();
+        }
+        if ((fields.get(0).equals(TODO_RECORD_TYPE) && fields.size() == 4)
+                || (fields.get(0).equals(DEADLINE_RECORD_TYPE) && fields.size() == 5)
+                || (fields.get(0).equals(EVENT_RECORD_TYPE) && fields.size() == 6)) {
+            task.tagWith(fields.get(fields.size() - 1));
         }
         assert task != null : "A valid storage record must produce a task.";
         return task;
@@ -260,20 +266,21 @@ public class Storage {
         }
         String status = task.isDone() ? COMPLETED_STATUS : INCOMPLETE_STATUS;
         if (task instanceof Deadline deadline) {
-            return String.format("%s | %s | %s | %s", DEADLINE_RECORD_TYPE, status,
+            return String.format("%s | %s | %s | %s | %s", DEADLINE_RECORD_TYPE, status,
                     encode(deadline.getDescription()),
-                    encodeRequired(formatDateTime(deadline.getDueBy())));
+                    encodeRequired(formatDateTime(deadline.getDueBy())), encode(task.getTag()));
         }
         if (task instanceof Event event) {
-            return String.format("%s | %s | %s | %s | %s", EVENT_RECORD_TYPE, status,
+            return String.format("%s | %s | %s | %s | %s | %s", EVENT_RECORD_TYPE, status,
                     encode(event.getDescription()),
                     encodeRequired(formatDateTime(event.getStartAt())),
-                    encodeRequired(formatDateTime(event.getEndAt())));
+                    encodeRequired(formatDateTime(event.getEndAt())), encode(task.getTag()));
         }
         if (!(task instanceof Todo)) {
             throw new IllegalArgumentException("Unknown task type.");
         }
-        return String.format("%s | %s | %s", TODO_RECORD_TYPE, status, encode(task.getDescription()));
+        return String.format("%s | %s | %s | %s", TODO_RECORD_TYPE, status,
+                encode(task.getDescription()), encode(task.getTag()));
     }
 
     /** Escapes characters that have meaning in the storage format. */

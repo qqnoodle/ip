@@ -59,12 +59,86 @@ class StorageTest {
         List<String> actual = Files.readAllLines(dataFile);
 
         List<String> expected = List.of(
-                "T | 0 | read book",
-                "D | 1 | return book | 2026-06-06",
-                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00"
+                "T | 0 | read book | ",
+                "D | 1 | return book | 2026-06-06 | ",
+                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00 | "
         );
 
         assertEquals(expected, actual);
+    }
+
+    /** Verifies that tags are saved for every supported task type. */
+    @Test
+    void savesTagsForAllTaskTypes() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("tagged.txt");
+        TaskList taskList = new TaskList(100);
+
+        Todo todo = new Todo("read book");
+        todo.tagWith("personal");
+        taskList.insert(todo);
+
+        Deadline deadline = new Deadline("return book", LocalDateTime.of(2026, 6, 6, 0, 0));
+        deadline.tagWith("urgent");
+        taskList.insert(deadline);
+
+        Event event = new Event("project meeting", LocalDateTime.of(2026, 8, 6, 14, 0),
+                LocalDateTime.of(2026, 8, 6, 16, 0));
+        event.tagWith("work");
+        taskList.insert(event);
+
+        new Storage(dataFile).save(taskList);
+
+        assertEquals(List.of(
+                "T | 0 | read book | personal",
+                "D | 0 | return book | 2026-06-06 | urgent",
+                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00 | work"
+        ), Files.readAllLines(dataFile));
+    }
+
+    /** Verifies that tags survive saving and loading. */
+    @Test
+    void taggedTasksRoundTrip() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("tag-round-trip.txt");
+        TaskList original = new TaskList(100);
+        Todo todo = new Todo("read book");
+        todo.tagWith("personal");
+        original.insert(todo);
+
+        Storage storage = new Storage(dataFile);
+        storage.save(original);
+
+        TaskList loaded = storage.load(100);
+
+        assertEquals("personal", loaded.getTaskByIndex(0).getTag());
+        assertEquals("[T][ ] read book tags: personal", loaded.getTaskByIndex(0).toString());
+    }
+
+    /** Verifies that tag delimiters are escaped and restored correctly. */
+    @Test
+    void escapedTagsRoundTrip() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("escaped-tag.txt");
+        TaskList original = new TaskList(100);
+        Todo todo = new Todo("read book");
+        todo.tagWith("work | urgent \\ today");
+        original.insert(todo);
+
+        Storage storage = new Storage(dataFile);
+        storage.save(original);
+
+        assertEquals("T | 0 | read book | work \\| urgent \\\\ today",
+                Files.readString(dataFile).strip());
+        assertEquals("work | urgent \\ today", storage.load(100).getTaskByIndex(0).getTag());
+    }
+
+    /** Verifies that records written before tag persistence remain loadable. */
+    @Test
+    void loadsLegacyRecordsWithoutTags() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("legacy.txt");
+        Files.writeString(dataFile, "T | 0 | read book");
+
+        TaskList loaded = new Storage(dataFile).load(100);
+
+        assertEquals("", loaded.getTaskByIndex(0).getTag());
     }
 
     /** Verifies that saving an empty list removes tasks from the old snapshot. */

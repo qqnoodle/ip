@@ -86,7 +86,6 @@ public class CommandParser {
             default -> throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
         };
     }
-
     /** Creates an exit command after validating that it has no arguments. */
     private static Command parseBye(TokenizedCommand tokenizedCommand) {
         if (tokenizedCommand.hasDescription()) {
