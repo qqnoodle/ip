@@ -31,7 +31,10 @@ public class EventCommand extends Command {
      * @param isTimeIncludedInEndDate whether the end included a time
      */
     public EventCommand(String description, LocalDateTime from, LocalDateTime to,
-                        boolean isTimeIncludedInStartDate, boolean isTimeIncludedInEndDate) {
+                         boolean isTimeIncludedInStartDate, boolean isTimeIncludedInEndDate) {
+        assert description != null : "Event description must not be null.";
+        assert from != null : "Event start must not be null.";
+        assert to != null : "Event end must not be null.";
         this.description = description;
         this.from = from;
         this.to = to;

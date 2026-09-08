@@ -25,6 +25,7 @@ public class UpcomingCommand extends Command {
      * @param isTimeIncluded whether the query includes a time
      */
     public UpcomingCommand(LocalDateTime on, boolean isTimeIncluded) {
+        assert on != null : "Upcoming date must not be null.";
         this.on = on;
         this.isTimeIncluded = isTimeIncluded;
     }

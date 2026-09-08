@@ -59,12 +59,84 @@ class StorageTest {
         List<String> actual = Files.readAllLines(dataFile);
 
         List<String> expected = List.of(
-                "T | 0 | read book",
-                "D | 1 | return book | 2026-06-06",
-                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00"
+                "T | 0 | read book | ",
+                "D | 1 | return book | 2026-06-06 | ",
+                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00 | "
         );
 
         assertEquals(expected, actual);
+    }
+
+    /** Verifies that tags are saved for every supported task type. */
+    @Test
+    void savesTagsForAllTaskTypes() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("tagged.txt");
+        TaskList taskList = new TaskList(100);
+
+        Todo todo = new Todo("read book");
+        todo.tagWith("personal");
+        taskList.insert(todo);
+
+        Deadline deadline = new Deadline("return book", LocalDateTime.of(2026, 6, 6, 0, 0));
+        deadline.tagWith("urgent");
+        taskList.insert(deadline);
+
+        Event event = new Event("project meeting", LocalDateTime.of(2026, 8, 6, 14, 0),
+                LocalDateTime.of(2026, 8, 6, 16, 0));
+        event.tagWith("work");
+        taskList.insert(event);
+
+        new Storage(dataFile).save(taskList);
+
+        assertEquals(List.of(
+                "T | 0 | read book | personal",
+                "D | 0 | return book | 2026-06-06 | urgent",
+                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00 | work"
+        ), Files.readAllLines(dataFile));
+    }
+
+    /** Verifies that tags survive saving and loading. */
+    @Test
+    void taggedTasksRoundTrip() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("tag-round-trip.txt");
+        TaskList original = new TaskList(100);
+        Todo todo = new Todo("read book");
+        todo.tagWith("personal");
+        original.insert(todo);
+
+        Storage storage = new Storage(dataFile);
+        storage.save(original);
+
+        TaskList loaded = storage.load(100);
+
+        assertEquals("personal", loaded.getTaskByIndex(0).getTag());
+        assertEquals("[T][ ] read book #personal", loaded.getTaskByIndex(0).toString());
+    }
+
+    /** Verifies that tag delimiters are escaped and restored correctly. */
+    @Test
+    void escapedTagsRoundTrip() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("escaped-tag.txt");
+        TaskList original = new TaskList(100);
+        Todo todo = new Todo("read book");
+        todo.tagWith("work | urgent \\ today");
+        original.insert(todo);
+
+        Storage storage = new Storage(dataFile);
+        storage.save(original);
+
+        assertEquals("T | 0 | read book | work \\| urgent \\\\ today",
+                Files.readString(dataFile).strip());
+        assertEquals("work | urgent \\ today", storage.load(100).getTaskByIndex(0).getTag());
+    }
+
+    /** Verifies that records without the required tag field are rejected. */
+    @Test
+    void rejectsRecordsWithoutTags() throws IOException {
+        Path dataFile = temporaryDirectory.resolve("legacy.txt");
+        Files.writeString(dataFile, "T | 0 | read book");
+
+        assertThrows(ArrodesException.class, () -> new Storage(dataFile).load(100));
     }
 
     /** Verifies that saving an empty list removes tasks from the old snapshot. */
@@ -90,9 +162,9 @@ class StorageTest {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
 
         Files.write(dataFile, List.of(
-                "T | 0 | read book",
-                "D | 1 | return book | 2026-06-06",
-                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00"
+                "T | 0 | read book | ",
+                "D | 1 | return book | 2026-06-06 | ",
+                "E | 0 | project meeting | 2026-08-06T14:00 | 2026-08-06T16:00 | "
         ));
 
         TaskList taskList = new Storage(dataFile).load(100);
@@ -127,7 +199,7 @@ class StorageTest {
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
-        Files.writeString(dataFile, "T | 2 | invalid status");
+        Files.writeString(dataFile, "T | 2 | invalid status | ");
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
@@ -137,19 +209,19 @@ class StorageTest {
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
-        Files.writeString(dataFile, "D | 0 | missing due date");
+        Files.writeString(dataFile, "D | 0 | missing due date | ");
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
-        Files.writeString(dataFile, "D | 0 | impossible date | 2026-02-31");
+        Files.writeString(dataFile, "D | 0 | impossible date | 2026-02-31 | ");
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
         );
 
         Files.writeString(
                 dataFile,
-                "E | 0 | reversed event | 2026-09-05T10:00 | 2026-09-05T09:00"
+                "E | 0 | reversed event | 2026-09-05T10:00 | 2026-09-05T09:00 | "
         );
         assertThrows(
                 ArrodesException.class, () -> new Storage(dataFile).load(100)
@@ -215,8 +287,8 @@ class StorageTest {
         );
 
         Files.write(dataFile, List.of(
-                "D | 0 | timed deadline | 2026-09-03T17:30",
-                "E | 0 | date-only event | 2026-09-04 | 2026-09-05"
+                "D | 0 | timed deadline | 2026-09-03T17:30 | ",
+                "E | 0 | date-only event | 2026-09-04 | 2026-09-05 | "
         ));
 
         TaskList mixedFormats = storage.load(10);
@@ -236,8 +308,8 @@ class StorageTest {
         Path dataFile = temporaryDirectory.resolve("full.txt");
 
         Files.write(dataFile, List.of(
-                "T | 0 | first",
-                "T | 0 | second"
+                "T | 0 | first | ",
+                "T | 0 | second | "
         ));
 
         assertThrows(

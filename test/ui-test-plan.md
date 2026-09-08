@@ -73,7 +73,7 @@ ____________________________________________________________
 
 ## TC02: Add and list every task type
 
-**Aim:** Verify that todo, deadline, event, and list commands display their stored tasks.
+**Aim:** Verify that todo, deadline, event, tag, and list commands display their stored tasks.
 
 **Command:**
 ```powershell
@@ -85,6 +85,7 @@ powershell -NoProfile -Command "Remove-Item data\arrodes.txt -ErrorAction Silent
 todo buy milk
 deadline submit report /by 2026-08-30
 event team meeting /from 2026-08-30T14:00 /to 2026-08-30T15:00
+tag 3 /with work
 list
 bye
 ```
@@ -118,10 +119,14 @@ Inscribing request:
 3 tasks are being tracked
 ____________________________________________________________
 ____________________________________________________________
+Arrodes shall bestow the task with work tag
+  [E][ ] team meeting (from: Aug 30 2026 14:00 to Aug 30 2026 15:00) #work
+____________________________________________________________
+____________________________________________________________
 Arrodes recalls your requests:
 1.[T][ ] buy milk
 2.[D][ ] submit report (by: Aug 30 2026)
-3.[E][ ] team meeting (from: Aug 30 2026 14:00 to Aug 30 2026 15:00)
+3.[E][ ] team meeting (from: Aug 30 2026 14:00 to Aug 30 2026 15:00) #work
 ____________________________________________________________
 ____________________________________________________________
 I shall await your next request...

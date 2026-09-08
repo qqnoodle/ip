@@ -14,6 +14,7 @@ public class TodoCommand extends Command {
      * @param description task description
      */
     public TodoCommand(String description) {
+        assert description != null : "Todo description must not be null.";
         this.description = description;
     }
 

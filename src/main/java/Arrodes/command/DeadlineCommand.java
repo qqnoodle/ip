@@ -21,6 +21,8 @@ public class DeadlineCommand extends Command {
      * @param dueBy deadline date and optional time
      */
     public DeadlineCommand(String description, LocalDateTime dueBy) {
+        assert description != null : "Deadline description must not be null.";
+        assert dueBy != null : "Deadline date must not be null.";
         this.description = description;
         this.dueBy = dueBy;
     }
