@@ -110,7 +110,7 @@ class StorageTest {
         TaskList loaded = storage.load(100);
 
         assertEquals("personal", loaded.getTaskByIndex(0).getTag());
-        assertEquals("[T][ ] read book tags: personal", loaded.getTaskByIndex(0).toString());
+        assertEquals("[T][ ] read book #personal", loaded.getTaskByIndex(0).toString());
     }
 
     /** Verifies that tag delimiters are escaped and restored correctly. */

@@ -43,6 +43,16 @@ class TaskTest {
         assertEquals(" ", task.getStatusIcon());
     }
 
+    /** Associates and retrieves a tag from a task. */
+    @Test
+    void tagWith_validTag_taskHasTag() {
+        Task task = new Todo("read a book");
+
+        task.tagWith("personal");
+
+        assertEquals("personal", task.getTag());
+    }
+
     /** Includes the incomplete status in task text. */
     @Test
     void toString_incompleteTask_containsBlankStatusIcon() {
@@ -56,5 +66,14 @@ class TaskTest {
         Task task = new Todo("read a book");
         task.markAsDone();
         assertTrue(task.toString().contains("[X]"));
+    }
+
+    /** Includes a task's tag in its display text. */
+    @Test
+    void toString_taggedTask_containsTag() {
+        Task task = new Todo("read a book");
+        task.tagWith("personal");
+
+        assertTrue(task.toString().contains("#personal"));
     }
 }

@@ -14,6 +14,7 @@ import arrodes.command.DeleteCommand;
 import arrodes.command.FindCommand;
 import arrodes.command.ListCommand;
 import arrodes.command.MarkCommand;
+import arrodes.command.TagCommand;
 import arrodes.command.TodoCommand;
 import arrodes.command.UnmarkCommand;
 import arrodes.exception.ArrodesException;
@@ -367,6 +368,38 @@ class CommandParserTest {
     @Test
     void parse_upcomingWithDescription_exceptionThrown() {
         assertThrows(ArrodesException.class, () -> CommandParser.parse("upcoming someday /on 2025-12-01"));
+    }
+
+    // ── parse – tag ───────────────────────────────────────────────────────────
+
+    /** Verifies that a valid tag command creates a tag command. */
+    @Test
+    void parse_tagWithTaskNumberAndTag_returnsTagCommand() {
+        assertInstanceOf(TagCommand.class, CommandParser.parse("tag 3 /with urgent"));
+    }
+
+    /** Verifies that a tag command requires a task number. */
+    @Test
+    void parse_tagWithoutTaskNumber_exceptionThrown() {
+        assertThrows(ArrodesException.class, () -> CommandParser.parse("tag /with urgent"));
+    }
+
+    /** Verifies that a tag command requires a {@code /with} parameter. */
+    @Test
+    void parse_tagWithoutWithParameter_exceptionThrown() {
+        assertThrows(ArrodesException.class, () -> CommandParser.parse("tag 3"));
+    }
+
+    /** Verifies that a tag command rejects a non-numeric task number. */
+    @Test
+    void parse_tagWithNonNumericTaskNumber_exceptionThrown() {
+        assertThrows(ArrodesException.class, () -> CommandParser.parse("tag abc /with urgent"));
+    }
+
+    /** Verifies that a tag command rejects unexpected parameters. */
+    @Test
+    void parse_tagWithUnexpectedParameter_exceptionThrown() {
+        assertThrows(ArrodesException.class, () -> CommandParser.parse("tag 3 /with urgent /extra value"));
     }
 
 

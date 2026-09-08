@@ -79,13 +79,13 @@ public class Task {
     /**
      * Returns a formatted display representation of this task.
      *
-     * @return task status, description, and tag information in display form
+     * @return task status and description, followed by the tag prefixed with {@code #} when present
      */
     @Override
     public String toString() {
         boolean hasTags = !tag.isBlank();
         if (hasTags) {
-            return String.format("[%s] %s tags: %s", getStatusIcon(), getDescription(), tag);
+            return String.format("[%s] %s #%s", getStatusIcon(), getDescription(), tag);
         }
         return String.format("[%s] %s", getStatusIcon(), getDescription());
     }
