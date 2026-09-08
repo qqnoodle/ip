@@ -38,16 +38,12 @@ public class CommandParser {
             throw new ArrodesException(ArrodesException.NO_INPUT);
         }
 
-        /*
-         * Splits the input given into 2 chunks [command, rest of input]
-         */
         String[] splitInput = userInput.split(" ", 2);
 
         String command = splitInput[0];
         String description = "";
         Map<String, String> parameters = new HashMap<>();
 
-        //description unavailable
         if (splitInput.length < 2) {
             return new TokenizedCommand(command, description, parameters);
         }
