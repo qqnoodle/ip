@@ -14,6 +14,7 @@ import arrodes.command.EventCommand;
 import arrodes.command.FindCommand;
 import arrodes.command.ListCommand;
 import arrodes.command.MarkCommand;
+import arrodes.command.TagCommand;
 import arrodes.command.TodoCommand;
 import arrodes.command.UnmarkCommand;
 import arrodes.command.UpcomingCommand;
@@ -83,6 +84,7 @@ public class CommandParser {
             case "list" -> parseList(tokenizedCommand);
             case "find" -> parseFind(tokenizedCommand);
             case "upcoming" -> parseUpcoming(tokenizedCommand);
+            case "tag" -> parseTag(tokenizedCommand);
             default -> throw new ArrodesException(ArrodesException.UNKNOWN_COMMAND);
         };
     }
@@ -97,8 +99,13 @@ public class CommandParser {
     /** Parses a one-based task number shared by task-number commands. */
     private static int parseTaskNumber(TokenizedCommand tokenizedCommand) {
         validateDescriptionWithoutParameters(tokenizedCommand);
+        return parseTaskNumberValue(tokenizedCommand.getDescription());
+    }
+
+    /** Converts a task number string into a validated integer. */
+    private static int parseTaskNumberValue(String taskNumber) {
         try {
-            return Integer.parseInt(tokenizedCommand.getDescription());
+            return Integer.parseInt(taskNumber);
         } catch (NumberFormatException exception) {
             throw new ArrodesException(ArrodesException.NOT_A_NUMBER);
         }
@@ -153,6 +160,16 @@ public class CommandParser {
         }
         String on = requireParameter(tokenizedCommand, "on");
         return new UpcomingCommand(parseDateTime(on), on.contains("T"));
+    }
+
+    /** Creates a tag command from a task number and its {@code /with} parameter. */
+    private static Command parseTag(TokenizedCommand tokenizedCommand) {
+        validateDescription(tokenizedCommand);
+        if (tokenizedCommand.getParameters().size() != 1) {
+            throw new ArrodesException(ArrodesException.INCORRECT_PARAMS);
+        }
+        String tag = requireParameter(tokenizedCommand, "with");
+        return new TagCommand(parseTaskNumberValue(tokenizedCommand.getDescription()), tag);
     }
 
     /** Validates that a command has a non-empty description. */
