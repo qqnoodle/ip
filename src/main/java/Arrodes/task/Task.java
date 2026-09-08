@@ -9,6 +9,8 @@ public class Task {
 
     /** Whether the task has been completed. */
     private boolean isDone;
+    /** Tag associated with the task. */
+    private String tag = "";
 
     /**
      * Creates an incomplete task with the given description.
@@ -56,13 +58,35 @@ public class Task {
     public void markAsNotDone() {
         isDone = false;
     }
+    /**
+     * Associates the given tag with this task.
+     *
+     * @param tag tag to associate with the task
+     */
+    public void tagWith(String tag) {
+        this.tag = tag;
+    }
 
     /**
-     * Returns the task status and description in display form.
-     * @return formatted task text
+     * Returns the tag associated with this task.
+     *
+     * @return task tag, or an empty string if the task is not tagged
+     */
+    public String getTag() {
+        return tag;
+    }
+
+    /**
+     * Returns a formatted display representation of this task.
+     *
+     * @return task status, description, and tag information in display form
      */
     @Override
     public String toString() {
+        boolean hasTags = !tag.isBlank();
+        if (hasTags) {
+            return String.format("[%s] %s tags: %s", getStatusIcon(), getDescription(), tag);
+        }
         return String.format("[%s] %s", getStatusIcon(), getDescription());
     }
 }
