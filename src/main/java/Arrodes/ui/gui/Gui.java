@@ -62,23 +62,41 @@ public class Gui extends AnchorPane implements Ui {
     /** Performs setup after all {@code @FXML} fields have been injected. */
     @FXML
     public void initialize() {
-        //Add listener to listen for button click
+        configureSendButton();
+        configureTextInput();
+        configureAutoScroll();
+    }
+
+    /** Configures the send button to process submitted input. */
+    private void configureSendButton() {
         sendButton.setOnMouseClicked((event) -> {
             handleUserInput();
         });
-        //Add listener to listen for enter
+    }
+
+    /** Configures the text field to process input submitted with Enter. */
+    private void configureTextInput() {
         textInput.setOnAction((event) -> {
             handleUserInput();
         });
-        //Scroll down to the end everytime dialogContainer height changes
+    }
+
+    /** Keeps the conversation view scrolled to the latest message. */
+    private void configureAutoScroll() {
         dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
     }
 
+    /** Displays submitted input and sends it to the application listener. */
     private void handleUserInput() {
         String userInput = readUserInput();
-        dialogContainer.getChildren().addAll(DialogBox.getUserDialogBox(userInput));
+        displayUserInput(userInput);
         assert inputListener != null : "GUI input listener must be attached before input is handled.";
         inputListener.execute(userInput);
+    }
+
+    /** Adds a submitted user message to the conversation view. */
+    private void displayUserInput(String userInput) {
+        dialogContainer.getChildren().addAll(DialogBox.getUserDialogBox(userInput));
     }
 
     @Override

@@ -38,7 +38,7 @@ class StorageTest {
     void savesAllTaskTypesAndStatuses() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
 
-        TaskList taskList = new TaskList();
+        TaskList taskList = new TaskList(100);
         taskList.insert(new Todo("read book"));
 
         Deadline deadline = new Deadline(
@@ -72,7 +72,7 @@ class StorageTest {
     void saveReplacesPreviousSnapshot() throws IOException {
         Path dataFile = temporaryDirectory.resolve("arrodes.txt");
 
-        TaskList taskList = new TaskList();
+        TaskList taskList = new TaskList(100);
         taskList.insert(new Todo("temporary task"));
 
         Storage storage = new Storage(dataFile);
@@ -161,7 +161,7 @@ class StorageTest {
     void escapedFieldsRoundTrip() throws IOException {
         Path dataFile = temporaryDirectory.resolve("escaped.txt");
 
-        TaskList original = new TaskList();
+        TaskList original = new TaskList(100);
         original.insert(new Todo("read | write \\ revise"));
         original.insert(new Deadline(
                 "submit | report",
@@ -188,7 +188,7 @@ class StorageTest {
     void dateAndTimeValuesAreTyped() throws IOException {
         Path dataFile = temporaryDirectory.resolve("typed.txt");
 
-        TaskList original = new TaskList();
+        TaskList original = new TaskList(100);
 
         original.insert(new Deadline(
                 "pay bill",
@@ -253,7 +253,7 @@ class StorageTest {
         Files.createDirectory(dataFile);
 
         assertThrows(
-                ArrodesException.class, () -> new Storage(dataFile).save(new TaskList())
+                ArrodesException.class, () -> new Storage(dataFile).save(new TaskList(100))
         );
 
         assertTrue(Files.isDirectory(dataFile));

@@ -32,17 +32,17 @@ public class FindCommand extends Command {
      */
     @Override
     public void execute(Ui ui, TaskList taskList, Storage storage) {
-        boolean found = false;
+        boolean hasMatchingTask = false;
         ui.showMessage("Here are the matching tasks in your list:");
         for (int i = 0; i < taskList.getSize(); i++) {
             Task task = taskList.getTaskByIndex(i);
             if (task.getDescription().toLowerCase(Locale.ROOT)
                     .contains(keyword.toLowerCase(Locale.ROOT))) {
                 ui.showMessage((i + 1) + "." + task);
-                found = true;
+                hasMatchingTask = true;
             }
         }
-        if (!found) {
+        if (!hasMatchingTask) {
             ui.showMessage("Arrodes found no matching tasks.");
         }
     }

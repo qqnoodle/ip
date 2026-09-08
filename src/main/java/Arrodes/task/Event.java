@@ -12,9 +12,9 @@ public class Event extends Task {
     /** Ending date and time of the event. */
     private final LocalDateTime endAt;
     /** Whether the input explicitly included a time for the start endpoint. */
-    private final boolean startIncludesTime;
+    private final boolean isStartTimeIncluded;
     /** Whether the input explicitly included a time for the end endpoint. */
-    private final boolean endIncludesTime;
+    private final boolean isEndTimeIncluded;
 
     /**
      * Creates a timed event whose endpoints are displayed with times.
@@ -32,20 +32,20 @@ public class Event extends Task {
      * @param description text describing the event
      * @param startAt event start
      * @param endAt event end
-     * @param startIncludesTime whether the input included a start time
-     * @param endIncludesTime whether the input included an end time
+     * @param isStartTimeIncluded whether the input included a start time
+     * @param isEndTimeIncluded whether the input included an end time
      * @throws IllegalArgumentException if an endpoint is null or the end precedes the start
      */
     public Event(String description, LocalDateTime startAt, LocalDateTime endAt,
-                 boolean startIncludesTime, boolean endIncludesTime) {
+                 boolean isStartTimeIncluded, boolean isEndTimeIncluded) {
         super(description);
         if (startAt == null || endAt == null || endAt.isBefore(startAt)) {
             throw new IllegalArgumentException("Event times are invalid.");
         }
         this.startAt = startAt;
         this.endAt = endAt;
-        this.startIncludesTime = startIncludesTime;
-        this.endIncludesTime = endIncludesTime;
+        this.isStartTimeIncluded = isStartTimeIncluded;
+        this.isEndTimeIncluded = isEndTimeIncluded;
     }
 
     /**
@@ -73,18 +73,18 @@ public class Event extends Task {
     @Override
     public String toString() {
         return String.format("[E]%s (from: %s to %s)", super.toString(),
-                formatEndpoint(startAt, startIncludesTime), formatEndpoint(endAt, endIncludesTime));
+                formatEndpoint(startAt, isStartTimeIncluded), formatEndpoint(endAt, isEndTimeIncluded));
     }
 
     /**
      * Formats an endpoint according to whether its input included a time.
      * @param endpoint endpoint to format
-     * @param includesTime whether to include hours and minutes
+     * @param isTimeIncluded whether to include hours and minutes
      * @return formatted endpoint
      */
-    private String formatEndpoint(LocalDateTime endpoint, boolean includesTime) {
+    private String formatEndpoint(LocalDateTime endpoint, boolean isTimeIncluded) {
         DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern(
-                includesTime ? "MMM dd yyyy HH:mm" : "MMM dd yyyy", Locale.ENGLISH);
+                isTimeIncluded ? "MMM dd yyyy HH:mm" : "MMM dd yyyy", Locale.ENGLISH);
         return endpoint.format(displayFormat);
     }
 }

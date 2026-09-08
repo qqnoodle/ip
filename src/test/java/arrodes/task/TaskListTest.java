@@ -23,7 +23,7 @@ class TaskListTest {
     /** Creates a fresh default-capacity list for each test. */
     @BeforeEach
     void setUp() {
-        taskList = new TaskList();
+        taskList = new TaskList(100);
     }
 
 
@@ -50,7 +50,7 @@ class TaskListTest {
 
     /** Reports that a new default list is not full. */
     @Test
-    void isFull_emptyDefaultList_returnsFalse() {
+    void isFull_emptyList_returnsFalse() {
         assertFalse(taskList.isFull());
     }
 

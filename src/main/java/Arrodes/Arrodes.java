@@ -55,27 +55,42 @@ public class Arrodes extends Application {
         stage.show();
     }
 
+    /** Runs the command-line interface until the user exits. */
     void run() {
         cli = new Cli();
+        showCliStartupMessage();
+
         boolean isExit = false;
+        while (!isExit) {
+            isExit = processNextCliCommand();
+        }
+    }
+
+    /** Displays the CLI startup message and its separator. */
+    private void showCliStartupMessage() {
         cli.showOnLoadMessage();
         cli.showSeparator();
-        while (!isExit) {
-            String userCommand = cli.readUserInput();
+    }
+
+    /** Processes one CLI command and returns whether it requests application exit. */
+    private boolean processNextCliCommand() {
+        String userCommand = cli.readUserInput();
+        cli.showSeparator();
+        try {
+            return executeCliCommand(userCommand);
+        } catch (ArrodesException knownArrodesException) {
+            System.out.println(knownArrodesException.getMessage());
+            return false;
+        } finally {
             cli.showSeparator();
-            try {
-                Command command = CommandParser.parse(userCommand);
-                command.execute(cli, taskList, storage);
-                isExit = command.isExit();
-            } catch (ArrodesException knownArrodesException) {
-                System.out.println(knownArrodesException.getMessage());
-            } finally {
-                cli.showSeparator();
-            }
-            if (isExit) {
-                break;
-            }
         }
+    }
+
+    /** Parses and executes one CLI command. */
+    private boolean executeCliCommand(String userCommand) {
+        Command command = CommandParser.parse(userCommand);
+        command.execute(cli, taskList, storage);
+        return command.isExit();
     }
 
     private void inputListener(String userInput) {
