@@ -1,0 +1,39 @@
+package arrodes.command;
+
+import arrodes.storage.Storage;
+import arrodes.task.Task;
+import arrodes.task.TaskList;
+import arrodes.ui.Ui;
+
+
+/** Command that tags a task in the task list*/
+public class TagCommand extends Command {
+    /** One-based number of the task to complete. */
+    private final int taskNumber;
+    /** tag which task will be given */
+    private final String tag;
+
+    /**
+     * Creates a command for tagging a task.
+     * @param taskNumber one-based task number
+     * @param tag the task will be tagged with
+     */
+    public TagCommand(int taskNumber, String tag) {
+        this.taskNumber = taskNumber;
+        this.tag = tag;
+    }
+    /**
+     * Tags the task, persists the list, and reports the result.
+     * @param ui interface used for output
+     * @param taskList list to update
+     * @param storage persistence layer
+     */
+    @Override
+    public void execute(Ui ui, TaskList taskList, Storage storage) {
+        Task task = taskList.getTaskByNumber(taskNumber);
+        task.tagWith(tag);
+        storage.save(taskList);
+        ui.showMessage("Arrodes shall bestow the task with " + tag + " tag");
+        ui.showMessage("  " + task);
+    }
+}
