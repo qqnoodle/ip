@@ -6,17 +6,18 @@ import arrodes.task.TaskList;
 import arrodes.ui.Ui;
 
 
-/** Command that tags a task in the task list*/
+/** Command that assigns a tag to a task in the task list. */
 public class TagCommand extends Command {
-    /** One-based number of the task to complete. */
+    /** One-based number of the task to tag. */
     private final int taskNumber;
-    /** tag which task will be given */
+    /** Tag to assign to the task. */
     private final String tag;
 
     /**
      * Creates a command for tagging a task.
+     *
      * @param taskNumber one-based task number
-     * @param tag the task will be tagged with
+     * @param tag tag to assign to the task
      */
     public TagCommand(int taskNumber, String tag) {
         this.taskNumber = taskNumber;

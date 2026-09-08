@@ -83,8 +83,8 @@ public class Task {
      */
     @Override
     public String toString() {
-        boolean hasTags = !tag.isBlank();
-        if (hasTags) {
+        boolean hasTag = !tag.isBlank();
+        if (hasTag) {
             return String.format("[%s] %s #%s", getStatusIcon(), getDescription(), tag);
         }
         return String.format("[%s] %s", getStatusIcon(), getDescription());
